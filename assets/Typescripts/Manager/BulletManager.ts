@@ -27,6 +27,10 @@ export class BulletManager extends Component {
         BulletManager._inst = this;  // 在 onLoad 中赋值，确保挂载后获取，组件必须挂载在节点上
     }
 
+    protected start(): void {
+        this.preLoadBullet(20);
+    }
+
     //预创建子弹，可以在游戏开始时调用
     preLoadBullet(count: number) {
         for (let i = 0; i < count; i++) {
@@ -34,6 +38,8 @@ export class BulletManager extends Component {
             // put(node) 是 NodePool 提供的方法，作用是将不再使用的节点放入池中，而不是直接 destroy 销毁。
             // 节点会被自动从场景中移除 removeFromParent()，但保留在内存里，下次需要时用 get() 取出来复用。
             this.bulletPool.put(bullet);
+            
+            // console.log('子弹池当前数量：', this.bulletPool.size()); //查看是否预创建成功
         }
     }
 
