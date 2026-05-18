@@ -1,0 +1,25 @@
+import { _decorator, Component, Node, view } from 'cc';
+
+export class SceneManager {
+    //用于管理场景的单例
+    private static _inst: SceneManager;
+    public static get inst(): SceneManager {
+        if (this._inst == null) {
+            this._inst = new SceneManager();
+        }
+        return this._inst
+    }
+
+    //背景滚动速度
+    public BgScrollSpeed: number = 400;
+
+    //获取当前视图的宽高
+    VisibleSize() {
+        //返回视图窗口可见区域像素尺寸
+        const visibleSize = view.getVisibleSize();
+        return visibleSize;
+    }
+}
+
+
+
