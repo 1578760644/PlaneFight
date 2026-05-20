@@ -23,7 +23,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 49
+      "__id__": 50
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -54,7 +54,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 56
+      "__id__": 57
     },
     "_id": "a05f44c7-e82c-481c-9613-cbd743d94a67"
   },
@@ -86,13 +86,13 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 46
-      },
-      {
         "__id__": 47
       },
       {
         "__id__": 48
+      },
+      {
+        "__id__": 49
       }
     ],
     "_prefab": null,
@@ -1034,7 +1034,11 @@
       }
     ],
     "_active": true,
-    "_components": [],
+    "_components": [
+      {
+        "__id__": 46
+      }
+    ],
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -1268,7 +1272,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "EnemySpawnPositon",
+    "_name": "EnemySpawnPosition",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -1332,6 +1336,46 @@
       "y": 0.5
     },
     "_id": "47lNVjphNDZrUJoHdRLwnu"
+  },
+  {
+    "__type__": "b582bg+D85FG60b/6uQuTco",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 37
+    },
+    "_enabled": true,
+    "__prefab": null,
+    "enemyPrefab": [
+      {
+        "__uuid__": "7866a19a-5336-4fad-9b60-d49d0934fc1c",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "781ff7af-e7e5-43b3-9acf-6d765e04379d",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "8dcca594-a392-467c-89ad-3a15b8017c36",
+        "__expectedType__": "cc.Prefab"
+      }
+    ],
+    "enemyParent": [
+      {
+        "__id__": 38
+      },
+      {
+        "__id__": 40
+      },
+      {
+        "__id__": 42
+      }
+    ],
+    "enemySpawnPosition": {
+      "__id__": 44
+    },
+    "_id": "7385ZqihRAr5Vboh5A72n8"
   },
   {
     "__type__": "cc.UITransform",
@@ -1409,13 +1453,13 @@
     "instance": null,
     "targetOverrides": [
       {
-        "__id__": 50
+        "__id__": 51
       },
       {
-        "__id__": 52
+        "__id__": 53
       },
       {
-        "__id__": 54
+        "__id__": 55
       }
     ],
     "nestedPrefabInstanceRoots": [
@@ -1437,7 +1481,7 @@
       "__id__": 15
     },
     "targetInfo": {
-      "__id__": 51
+      "__id__": 52
     }
   },
   {
@@ -1459,7 +1503,7 @@
       "__id__": 15
     },
     "targetInfo": {
-      "__id__": 53
+      "__id__": 54
     }
   },
   {
@@ -1481,7 +1525,7 @@
       "__id__": 15
     },
     "targetInfo": {
-      "__id__": 55
+      "__id__": 56
     }
   },
   {
@@ -1493,28 +1537,28 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 57
-    },
-    "shadows": {
       "__id__": 58
     },
-    "_skybox": {
+    "shadows": {
       "__id__": 59
     },
-    "fog": {
+    "_skybox": {
       "__id__": 60
     },
-    "octree": {
+    "fog": {
       "__id__": 61
     },
-    "skin": {
+    "octree": {
       "__id__": 62
     },
-    "lightProbeInfo": {
+    "skin": {
       "__id__": 63
     },
-    "postSettings": {
+    "lightProbeInfo": {
       "__id__": 64
+    },
+    "postSettings": {
+      "__id__": 65
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false

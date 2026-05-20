@@ -2,6 +2,7 @@ import { _decorator, Component, instantiate, Node, NodePool, Prefab, Vec3 } from
 import { Bullet01 } from './Bullet01';
 const { ccclass, property } = _decorator;
 
+//让bullet调用接口
 export interface ILauncher {
     init(direction: Vec3): void;
 }
@@ -16,8 +17,12 @@ export class BulletManager extends Component {
     @property(Node)
     public bulletParent: Node | null = null;
 
-    // //对象池
-    // private bulletPool: NodePool = new NodePool();
+    //#region
+    //对象池NodePool为cocos内置的方法
+    //private bulletPool: NodePool = new NodePool();
+
+    //对象池完整的生命周期需要有 初始化池（实例化） → 预加载（可选） → 发射（需要先从对应池取到） → 回收
+    //#endregion
 
     //核心数据结构：<类型名, {池, 预制体, 组件名(可选)}>
     //用映射表（Map）动态管理对象池
@@ -37,14 +42,22 @@ export class BulletManager extends Component {
 
         //实例化对象池
         this.initPools();
+
+        // // 预加载5个 bullet01 和 10个 bullet02
+        // BulletManager.inst.preloadBullet('bullet01', 5);
+        // BulletManager.inst.preloadBullet('bullet02', 10);
+
+        // // 或者直接预加载所有类型，每个类型10个
+        // BulletManager.inst.preloadAll(10);
     }
 
+    //初始化池
     private initPools() {
         //遍历预制体数组,把每个预制体都变成对象池类型
         for (const prefab of this.bulletPrefabs) {
             //取到每个预制体的名字
             const type = prefab.name;
-            //通过每个预制体的名字进行标识
+            //通过每个预制体的名字进行标识，这里的type就是bullet01 02...   键：type → 值：{pool，prefab，compName}
             this.poolMap.set(type, {
                 //每一个预制体都实例化为对象池类型
                 pool: new NodePool(),
@@ -52,6 +65,35 @@ export class BulletManager extends Component {
                 compName: prefab.name //这里的预制体名跟组件名一样
             });
         }
+    }
+
+    //预加载一种子弹(子弹类型，数量)
+    public preloadBullet(type: string, count: number) {
+        const info = this.poolMap.get(type);
+        if (!info) {
+            console.warn(`[BulletManager]没有找到子弹类型：${type}`);
+            return;
+        }
+        //循环创建放入池中
+        for (let i = 0; i < count; i++) {
+            const bullet = instantiate(info.prefab);
+            //提前打类型标签
+            bullet[`bulletType`] = type;
+            // put 会自动 removeFromParent
+            info.pool.put(bullet);
+        }
+    }
+
+    //预加载所有子弹（数量）
+    public preloadAll(countPerType: number) {
+        //通过forEach方法遍历每个对象池
+        this.poolMap.forEach((info, type) => {
+            for (let i = 0; i < countPerType; i++) {
+                const bullet = instantiate(info.prefab);
+                bullet['bulletType'] = type;
+                info.pool.put(bullet);
+            }
+        });
     }
 
     //获取子弹（从对应池）
