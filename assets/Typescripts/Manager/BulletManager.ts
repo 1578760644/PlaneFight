@@ -4,6 +4,7 @@ const { ccclass, property } = _decorator;
 
 //让bullet调用接口
 export interface ILauncher {
+    //初始化了子弹的方向
     init(direction: Vec3): void;
 }
 
@@ -21,7 +22,7 @@ export class BulletManager extends Component {
     //对象池NodePool为cocos内置的方法
     //private bulletPool: NodePool = new NodePool();
 
-    //对象池完整的生命周期需要有 初始化池（实例化） → 预加载（可选） → 发射（需要先从对应池取到） → 回收
+    //对象池完整的生命周期需要有 初始化池（实例化） → 预加载（可选） → 获取 → 发射（需要先从对应池取到） → 回收
     //#endregion
 
     //核心数据结构：<类型名, {池, 预制体, 组件名(可选)}>
