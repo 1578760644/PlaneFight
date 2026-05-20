@@ -1,7 +1,19 @@
-import { _decorator, clamp, Component, EventTouch, Input, input, instantiate, Node, Prefab, Vec2, Vec3 } from 'cc';
+import { _decorator, clamp, Component, EventMouse, EventTouch, Input, input, instantiate, Node, Prefab, Vec2, Vec3, view } from 'cc';
 import { SceneManager } from '../Manager/SceneManager';
 import { BulletManager } from '../Manager/BulletManager';
 const { ccclass, property } = _decorator;
+
+//通过接口和数组来灵活调用子弹，暂时没有用到
+interface MuzzleConfig {
+    node: Node;         // 发射口节点
+    bulletType: string; // 子弹类型，对应poolMap里的键
+    direction: Vec3;    // 发射方向
+}
+
+enum ShootType {
+    OneShoot,
+    TwoShoot
+}
 
 @ccclass('PlayerManager')
 export class PlayerManager extends Component {
@@ -12,20 +24,27 @@ export class PlayerManager extends Component {
     @property(Node)
     public muzzle2: Node | null = null;
 
+    //发射口配置数组
+    private muzzleConfigs: MuzzleConfig[] = [];
+
     //限制飞行边界
     private minX: number = 0;
     private maxX: number = 0;
     private minY: number = 0;
     private maxY: number = 0;
 
-    //获取当前视图大小,可以直接通过view.getVisibleSize方法来获取，后续需要全部改写
-    private visibleSize = SceneManager.inst.VisibleSize();
+    //获取当前视图大小
+    private visibleSize = view.getVisibleSize();
     //设置飞机出生位置，默认生成位置是0,0。屏幕下方也就是当前屏幕高度/4
     private spawnY: number = -this.visibleSize.height / 4;
 
     //发射子弹的方法
-    private fireTimer: number = 0;
-    private fireInterval: number = 0.3;
+    private shootTimer: number = 0;
+    private shootInterval: number = 0.3;
+
+    //暂时用一下切换子弹
+    @property
+    shootType: ShootType = ShootType.OneShoot;
 
     protected onLoad(): void {
         input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this)
@@ -42,13 +61,19 @@ export class PlayerManager extends Component {
 
         //设置飞机生成位置
         this.setPlayerSpawnPositon();
+
+        //初始化发射口配置
+        this.initMuzzleConfigs();
     }
 
     update(deltaTime: number) {
-        this.fireTimer += deltaTime;
-        if (this.fireTimer >= this.fireInterval) {
-            this.fireTimer = 0;
-            this.shoot();
+        switch (this.shootType) {
+            case ShootType.OneShoot:
+                this.oneShoot(deltaTime);
+                break;
+            case ShootType.TwoShoot:
+                this.twoShoot(deltaTime);
+                break;
         }
     }
 
@@ -77,12 +102,54 @@ export class PlayerManager extends Component {
         this.player.setPosition(0, this.spawnY)
     }
 
+    //还可以有更动态的方式
+    private initMuzzleConfigs() {
+        this.muzzleConfigs = [
+            {
+                node: this.muzzle1,
+                bulletType: 'Bullet01',
+                direction: new Vec3(0, 1, 0),
+            },
+            {
+                node: this.muzzle2,
+                bulletType: 'Bullet02',
+                direction: new Vec3(0, 1, 0), //斜着射
+            },
+        ]
+    }
+
+    // //发射方法，暂时弃用
+    // private shoot() {
+    //     for (const config of this.muzzleConfigs) {
+    //         if (!config) continue //节点没挂载就跳过
+    //         const worldPos = config.node.getWorldPosition();
+    //         BulletManager.inst.fire(config.bulletType, worldPos, config.direction)
+    //     }
+    // }
+
     //发射方法
-    private shoot() {
-        if (!this.muzzle1) return;
-        const worldPos = this.muzzle1.getWorldPosition();
-        const direction = new Vec3(0, 1, 0);
-        BulletManager.inst.fire01(worldPos, direction)
+    private oneShoot(deltaTime: number) {
+        this.shootTimer += deltaTime;
+        if (this.shootTimer >= this.shootInterval) {
+            this.shootTimer = 0;
+
+            if (!this.muzzle1) return;
+            const worldPos = this.muzzle1.getWorldPosition();
+            const direction = new Vec3(0, 1, 0);
+            BulletManager.inst.fire('Bullet01', worldPos, direction)
+        }
+    }
+
+    private twoShoot(deltaTime: number) {
+        this.shootTimer += deltaTime;
+        if (this.shootTimer >= this.shootInterval) {
+            this.shootTimer = 0;
+
+            if (!this.muzzle2) return;
+            const worldPos = this.muzzle2.getWorldPosition();
+            const direction = new Vec3(0, 1, 0);
+            BulletManager.inst.fire('Bullet02', worldPos, direction)
+        }
     }
 }
 

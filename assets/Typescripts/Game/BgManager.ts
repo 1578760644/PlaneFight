@@ -16,9 +16,9 @@ export class BgManager extends Component {
     private BgScrollSpeed: number = SceneManager.inst.BgScrollSpeed;
 
     //获取当前视图大小
-    private visibleSize = SceneManager.inst.VisibleSize();
-    //背景高度
-    private bghight: number = 0;
+    private visibleSize = view.getVisibleSize();
+    //设置通过当前视图大小+10 设置背景高度，多出余量作为背景移动的过渡
+    private bghight: number = this.visibleSize.height + 10;
 
     start() {
         //动态设置背景图片
@@ -31,9 +31,6 @@ export class BgManager extends Component {
     }
 
     private setBgPosition() {
-        //设置背景高度，多出余量作为背景移动的过渡
-        this.bghight = this.visibleSize.height + 10;
-
         //设置背景尺寸跟可视尺寸相同
         if (this.Bg01) {
             const ui1 = this.Bg01.getComponent(UITransform);

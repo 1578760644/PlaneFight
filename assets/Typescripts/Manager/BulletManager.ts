@@ -2,17 +2,26 @@ import { _decorator, Component, instantiate, Node, NodePool, Prefab, Vec3 } from
 import { Bullet01 } from './Bullet01';
 const { ccclass, property } = _decorator;
 
+export interface ILauncher {
+    init(direction: Vec3): void;
+}
+
 @ccclass('BulletManager')
 export class BulletManager extends Component {
-    @property(Prefab)
-    public bullet01Prefab: Prefab | null = null;
-    @property(Prefab)
-    public bullet02Prefab: Prefab | null = null;
-    @property(Node)
-    public bulletParent: Node | null = null; //存放子弹的容器
+    //用数组存放bullet预制体
+    @property([Prefab])
+    bulletPrefabs: Prefab[] = [];
 
-    //对象池
-    private bulletPool: NodePool = new NodePool();
+    //子弹存放在bulletParent下
+    @property(Node)
+    public bulletParent: Node | null = null;
+
+    // //对象池
+    // private bulletPool: NodePool = new NodePool();
+
+    //核心数据结构：<类型名, {池, 预制体, 组件名(可选)}>
+    //用映射表（Map）动态管理对象池
+    private poolMap: Map<string, { pool: NodePool; prefab: Prefab; compName?: string }> = new Map();
 
     //单例
     private static _inst: BulletManager;
@@ -25,61 +34,67 @@ export class BulletManager extends Component {
 
     protected onLoad(): void {
         BulletManager._inst = this;  // 在 onLoad 中赋值，确保挂载后获取，组件必须挂载在节点上
+
+        //实例化对象池
+        this.initPools();
     }
 
-    protected start(): void {
-        this.preLoadBullet(20);
-    }
-
-    //预创建子弹，可以在游戏开始时调用
-    preLoadBullet(count: number) {
-        for (let i = 0; i < count; i++) {
-            const bullet = instantiate(this.bullet01Prefab);
-            // put(node) 是 NodePool 提供的方法，作用是将不再使用的节点放入池中，而不是直接 destroy 销毁。
-            // 节点会被自动从场景中移除 removeFromParent()，但保留在内存里，下次需要时用 get() 取出来复用。
-            this.bulletPool.put(bullet);
-            
-            // console.log('子弹池当前数量：', this.bulletPool.size()); //查看是否预创建成功
+    private initPools() {
+        //遍历预制体数组,把每个预制体都变成对象池类型
+        for (const prefab of this.bulletPrefabs) {
+            //取到每个预制体的名字
+            const type = prefab.name;
+            //通过每个预制体的名字进行标识
+            this.poolMap.set(type, {
+                //每一个预制体都实例化为对象池类型
+                pool: new NodePool(),
+                prefab: prefab,
+                compName: prefab.name //这里的预制体名跟组件名一样
+            });
         }
     }
 
-    //从池中获取一颗子弹
-    getBullet(): Node {
-        let bullet: Node = null;
-        //对象池可用对象 > 0
-        if (this.bulletPool.size() > 0) {
-            bullet = this.bulletPool.get(); //获取对象池中的对象
-        } else { //如果没有就实例化子弹
-            bullet = instantiate(this.bullet01Prefab)
+    //获取子弹（从对应池）
+    private getBullet(type: string): Node {
+        //通过type标签取出对应的预制体
+        const info = this.poolMap.get(type);
+        if (!info) return null
+        //如果对象池中的可用数量大于0就通过get方法取出来，没有就实例化新的节点
+        return info.pool.size() > 0 ? info.pool.get() : instantiate(info.prefab);
+    }
+
+    //通用发射口
+    fire(type: string, worldPos: Vec3, direction: Vec3) {
+        //从poolMap里取出对应表,如果不存在就return
+        const info = this.poolMap.get(type);
+        if (!info) return;
+
+        //获取子弹
+        const bullet = this.getBullet(type)
+        //先设置父节点，再设置世界坐标。避免设置节点的时候默认子节点的世界坐标变为0,0
+        bullet.setParent(this.bulletParent);
+        bullet.setWorldPosition(worldPos);
+
+        //在节点上存自定义类型 bulletType：type ，后面需要回收
+        bullet[`bulletType`] = type;
+
+        //取预制体下的自定义组件名
+        const comp = bullet.getComponent(info.compName) as unknown as ILauncher | null;
+        //使用接口类型断言来避免报错，保持类型安全
+        if (comp?.init) comp.init(direction);
+    }
+
+    //回收（根据节点上保存的类型自动放入对应池）
+    recycleBullet(node: Node) {
+        //相当于node.bulletType 通过自定义属性取到对应的类型
+        const type = node[`bulletType`];
+        if (!type) return
+        const info = this.poolMap.get(type);
+        if (info) {
+            //把对象回收到池
+            info.pool.put(node);
         }
-        return bullet;
     }
-
-    //回收子弹到池
-    recycleBullet(bullet: Node) {
-        // // 可以在这里重置子弹状态
-        // bullet.getComponent(Bullet)?.reset?.(); // 如果有 reset 方法
-        this.bulletPool.put(bullet);
-    }
-
-    //发射接口，参数：发射位置和方向
-    fire01(position: Vec3, direction: Vec3) {
-        const bullet = this.getBullet();
-        bullet.setParent(this.bulletParent); 
-        bullet.setWorldPosition(position);
-        //#region
-        // bullet.setParent(this.bulletParent,true); 
-        // 原来把设置父节点写在世界坐标下面 
-        // 如果不写可选参数true，setParent会默认把子节点世界位置重置
-        //#endregion
-        //获取BulletManger下的Bullet01组件，然后调用里面的init方法
-        const bulletComp = bullet.getComponent(Bullet01)
-        if (bulletComp) {
-            bulletComp.init(direction);
-        }
-        // bullet.getComponent(Bullet01)?.init(direction);
-    }
-
 }
 
 

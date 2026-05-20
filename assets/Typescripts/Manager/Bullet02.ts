@@ -1,14 +1,14 @@
 import { _decorator, Component, Node, Vec3, view } from 'cc';
-import { BulletManager } from './BulletManager';
+import { BulletManager, ILauncher } from './BulletManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Bullet02')
-export class Bullet02 extends Component {
+export class Bullet02 extends Component implements ILauncher {
     //子弹发射速度
     @property
     private speed: number = 500;
 
-    //子弹移动方向
+    //子弹默认移动方向
     private _direction: Vec3 = new Vec3(0, 1, 0);
 
     update(deltaTime: number) {

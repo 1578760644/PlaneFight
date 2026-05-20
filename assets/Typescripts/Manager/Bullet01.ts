@@ -1,15 +1,17 @@
 import { _decorator, Component, Node, Vec3, view } from 'cc';
 import { BulletManager } from './BulletManager';
+import { ILauncher } from './BulletManager';
 const { ccclass, property } = _decorator;
 
+
 @ccclass('Bullet01')
-export class Bullet01 extends Component {
+export class Bullet01 extends Component implements ILauncher {
 
     //子弹发射速度
     @property
     private speed: number = 500;
 
-    //子弹移动方向
+    //子弹默认移动方向
     private _direction: Vec3 = new Vec3(0, 1, 0);
 
     update(deltaTime: number) {
@@ -30,7 +32,7 @@ export class Bullet01 extends Component {
         }
     }
 
-    // 供外部调用，设置方向
+    // 实现接口供外部调用，设置方向
     public init(direction: Vec3) {
         //克隆当前向量
         this._direction = direction.clone();

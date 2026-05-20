@@ -2,12 +2,12 @@
   "ver": "2.0.3",
   "importer": "animation-clip",
   "imported": true,
-  "uuid": "91b2039b-bc5b-40c9-b2aa-15345f1c8c26",
+  "uuid": "da31f6a3-ff14-42b2-a5c6-4ebb2ca8ce10",
   "files": [
     ".cconb"
   ],
   "subMetas": {},
   "userData": {
-    "name": "Loading"
+    "name": "Enemy1_Down"
   }
 }

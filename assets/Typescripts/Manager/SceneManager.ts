@@ -14,13 +14,6 @@ export class SceneManager {
 
     //背景滚动速度
     public BgScrollSpeed: number = 400;
-
-    //获取当前视图的宽高
-    VisibleSize() {
-        //返回视图窗口可见区域像素尺寸
-        const visibleSize = view.getVisibleSize();
-        return visibleSize;
-    }
 }
 
 
