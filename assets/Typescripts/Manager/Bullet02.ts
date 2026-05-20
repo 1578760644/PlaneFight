@@ -1,18 +1,31 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, Vec3, view } from 'cc';
+import { BulletManager } from './BulletManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Bullet02')
 export class Bullet02 extends Component {
+    //子弹发射速度
     @property
-    speed: number = 300;
+    private speed: number = 500;
 
-    start() {
-
-    }
+    //子弹移动方向
+    private _direction: Vec3 = new Vec3(0, 1, 0);
 
     update(deltaTime: number) {
-        const position = this.node.position;
-        this.node.setPosition(position.x, position.y + this.speed * deltaTime)
+        const pos = this.node.getPosition();
+        Vec3.scaleAndAdd(pos, pos, this._direction, this.speed * deltaTime)
+        this.node.setPosition(pos);
+
+        //超出屏幕时回收（调用 BulletManager 回收）
+        if (pos.y > view.getVisibleSize().height + 10) {
+            BulletManager.inst.recycleBullet(this.node);
+        }
+    }
+
+    // 供外部调用，设置方向
+    public init(direction: Vec3) {
+        //克隆当前向量
+        this._direction = direction.clone();
     }
 }
 

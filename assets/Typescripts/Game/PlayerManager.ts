@@ -8,7 +8,9 @@ export class PlayerManager extends Component {
     @property(Node)
     public player: Node | null = null;
     @property(Node)
-    public muzzle: Node | null = null;
+    public muzzle1: Node | null = null;
+    @property(Node)
+    public muzzle2: Node | null = null;
 
     //限制飞行边界
     private minX: number = 0;
@@ -77,10 +79,10 @@ export class PlayerManager extends Component {
 
     //发射方法
     private shoot() {
-        if (!this.muzzle) return;
-        const worldPos = this.muzzle.getWorldPosition();
+        if (!this.muzzle1) return;
+        const worldPos = this.muzzle1.getWorldPosition();
         const direction = new Vec3(0, 1, 0);
-        BulletManager.inst.fire01(worldPos,direction)
+        BulletManager.inst.fire01(worldPos, direction)
     }
 }
 
