@@ -67,10 +67,33 @@ export class EnemyManager extends Component {
     }
 
 
-    //预加载
+    //预加载单个敌人
+    public preloadEnemy(type: string, count: number) {
+        const info = this.poolMap.get(type);
+        if (!info) {
+            console.log(`EnemyManager没有找到敌人类型:${type}`);
+            return;
+        }
+        for (let i = 0; i < count; i++) {
+            const enemy = instantiate(info.prefab);
+            enemy[`enemyType`] = type;
+            info.pool.put(enemy);
+        }
+    }
+
+    //预加载全部敌人
+    public preloadAll(count: number) {
+        this.poolMap.forEach((info, type) => {
+            for (let i = 0; i < count; i++) {
+                const enemy = instantiate(info.prefab);
+                enemy[`enemyType`] = type;
+                info.pool.put(enemy);
+            }
+        });
+    }
 
     //获取(从对应池)
-    public getEnemy(type: string): Node {
+    private getEnemy(type: string): Node {
         //通过type标签取出对应的预制体
         const info = this.poolMap.get(type);
         if (!info) return null;
@@ -107,6 +130,7 @@ export class EnemyManager extends Component {
         const spawnPos = this.spawnPoint.getWorldPosition();
         // X 轴随机偏移,附加偏移量后面可以通过获取到预制体的宽度来动态实现
         //(Math.random() - 0.5) * visibleSize.width 等价于正负 - + visibleSize.width / 2
+        //两边个各预留80px
         const randomX = (Math.random() - 0.5) * (visibleSize.width - 180)
         // Y 轴保持生成点高度（屏幕上方外）
         return new Vec3(spawnPos.x + randomX, spawnPos.y, 0);

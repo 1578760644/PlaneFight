@@ -1,5 +1,4 @@
 import { _decorator, Component, instantiate, Node, NodePool, Prefab, Vec3 } from 'cc';
-import { Bullet01 } from './Bullet01';
 const { ccclass, property } = _decorator;
 
 //让bullet调用接口
