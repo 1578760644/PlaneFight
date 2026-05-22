@@ -8,7 +8,7 @@ export class Bullet01 extends Component implements ILauncher {
 
     //子弹发射速度
     @property
-    private speed: number = 500;
+    private _speed: number = 500;
 
     //子弹默认移动方向
     private _direction: Vec3 = new Vec3(0, 1, 0);
@@ -22,7 +22,7 @@ export class Bullet01 extends Component implements ILauncher {
         //假设 a = (ax, ay, az), b = (bx, by, bz), scale = s
         //那么结果 out = (bx + ax * s, by + ay * s, bz + az * s)
         //#endregion
-        Vec3.scaleAndAdd(pos, pos, this._direction, this.speed * deltaTime)
+        Vec3.scaleAndAdd(pos, pos, this._direction, this._speed * deltaTime)
         this.node.setPosition(pos);
 
         //超出屏幕时回收（调用 BulletManager 回收）

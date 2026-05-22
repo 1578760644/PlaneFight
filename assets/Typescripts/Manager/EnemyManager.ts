@@ -1,10 +1,10 @@
-import { _decorator, Component, instantiate, Node, NodePool, Pool, Prefab, Vec3, view, View } from 'cc';
+import { _decorator, Component, instantiate, Node, NodePool, Pool, Prefab, UITransform, Vec3, view, View } from 'cc';
 const { ccclass, property } = _decorator;
 
-// 敌人接口（可选，建议实现）
+//敌人接口
 export interface IEnemy {
-    init(data?: any): void;        // 初始化属性（速度、生命值等）
-    onRecycle?(): void;            // 回收时重置状态（可选）
+    //默认移动方向
+    init(direction: Vec3): void;
 }
 
 
@@ -44,6 +44,11 @@ export class EnemyManager extends Component {
         //实例化对象池
         this.initPools();
     }
+
+    //生成测试
+    // protected update(dt: number): void {
+    //     this.spawn('Enemy0')
+    // }
 
     //初始化池
     private initPools() {
@@ -103,37 +108,60 @@ export class EnemyManager extends Component {
 
 
     //生成
-    public spawn(type: string, wordPos: Vec3, direction: Vec3) {
+    public spawn(type: string, worldPos?: Vec3, direction?: Vec3) {
         //从poolMap里取出对应表,如果不存在就return
         const info = this.poolMap.get(type);
         if (!info) return;
 
         //获取敌人
         const enemy = this.getEnemy(type);
+        //取预制体下的自定义组件名
+        const comp = enemy.getComponent(info.compName) as unknown as IEnemy | null;
         //绑定敌人到父节点
         enemy.setParent(info.parent);
         //设置敌人生成位置和坐标,可以通过默认的位置或者定义的方法
-        enemy.setWorldPosition(wordPos || this.getRandomSpawnPos());
+        if (worldPos) {
+            enemy.setWorldPosition(worldPos);
+        } else {
+            const randomPos = this.getRandomSpawnPos(enemy); // 传入节点以获取宽度
+            enemy.setWorldPosition(randomPos);
+        }
         //标记类型回收
         enemy[`enemyType`] = type;
 
-        //调用敌人自己的初始化方法
-        // const comp = enemy.getComponent(info.compName) as IEnemy;
-        // if (comp?.init) {
-        //     comp.init(/* 可以传入配置数据，如血量、速度等 */);
-        // }
+        //使用接口类型断言来避免报错，保持类型安全
+        if (comp?.init && direction) {
+            comp.init(direction);
+        }
     }
 
     // 获取随机生成位置（屏幕外，X 随机）
-    public getRandomSpawnPos() {
+    public getRandomSpawnPos(enemyNode?: Node) {
         const visibleSize = view.getVisibleSize();
         const spawnPos = this.spawnPoint.getWorldPosition();
+        let margin = 80; //默认边距
+        if (enemyNode) {
+            const ui = enemyNode.getComponent(UITransform);
+            if (ui) {
+                margin = ui.width / 2;
+            }
+        }
         // X 轴随机偏移,附加偏移量后面可以通过获取到预制体的宽度来动态实现
         //(Math.random() - 0.5) * visibleSize.width 等价于正负 - + visibleSize.width / 2
-        //两边个各预留80px
-        const randomX = (Math.random() - 0.5) * (visibleSize.width - 180)
+        //默认两边个各预留80px，实际根据敌人宽度决定
+        const randomX = (Math.random() - 0.5) * (visibleSize.width - 2 * margin)
         // Y 轴保持生成点高度（屏幕上方外）
         return new Vec3(spawnPos.x + randomX, spawnPos.y, 0);
+    }
+
+    //回收（根据节点上保存的类型自动放入对应池）
+    public recycleEnemy(node: Node) {
+        const type = node[`enemyType`]
+        if (!type) return;
+        const info = this.poolMap.get(type);
+        if (info) {
+            info.pool.put(node);
+        }
     }
 }
 

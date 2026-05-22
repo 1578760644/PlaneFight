@@ -1,5 +1,4 @@
 import { _decorator, clamp, Component, EventMouse, EventTouch, Input, input, instantiate, Node, Prefab, Vec2, Vec3, view } from 'cc';
-import { SceneManager } from '../Manager/SceneManager';
 import { BulletManager } from '../Manager/BulletManager';
 const { ccclass, property } = _decorator;
 
