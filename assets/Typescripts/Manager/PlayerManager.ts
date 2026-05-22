@@ -112,7 +112,7 @@ export class PlayerManager extends Component {
             {
                 node: this.muzzle2,
                 bulletType: 'Bullet02',
-                direction: new Vec3(0, 1, 0), //斜着射
+                direction: new Vec3(0.5, 1, 0), //斜着射
             },
         ]
     }
