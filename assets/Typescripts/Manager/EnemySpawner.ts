@@ -2,35 +2,47 @@ import { _decorator, Component, Node } from 'cc';
 import { EnemyManager } from './EnemyManager';
 const { ccclass, property } = _decorator;
 
+interface SpawnRule {
+    type: string;       //敌人类型
+    interval: number;   //生成间隔
+    count: number       //生成数量
+}
+
+
 @ccclass('EnemySpawner')
 export class EnemySpawner extends Component {
-    @property
-    public spawnInterval0: number = 1;
-    @property
-    public spawnInterval1: number = 5;
-    @property
-    public spawnInterval2: number = 10;
 
-    private _timer0: number = 0;
-    private _timer1: number = 0;
-    private _timer2: number = 0;
+    private rules: SpawnRule[] = [
+        { type: 'Enemy0', interval: 1, count: 2 },
+        { type: 'Enemy1', interval: 5, count: 1 },
+        { type: 'Enemy2', interval: 10, count: 1 },
+    ];
 
-    update(deltaTime: number) {
-        this._timer0 += deltaTime;
-        this._timer1 += deltaTime;
-        this._timer2 += deltaTime;
+    private _timers: Map<string, number> = new Map();
 
-        if (this._timer0 >= this.spawnInterval0) {
-            this._timer0 = 0;
-            EnemyManager.inst.spawn('Enemy0');
+    protected start(): void {
+        //初始化每个规则的计时器
+        for (const rule of this.rules) {
+            this._timers.set(rule.type, 0);
         }
-        if (this._timer1 >= this.spawnInterval1) {
-            this._timer1 = 0;
-            EnemyManager.inst.spawn('Enemy1');
-        }
-        if (this._timer2 >= this.spawnInterval2) {
-            this._timer2 = 0;
-            EnemyManager.inst.spawn('Enemy2');
+    }
+
+    protected update(dt: number): void {
+        for (const rule of this.rules) {
+            //取到每一个map下对应的number
+            let timer = this._timers.get(rule.type) + dt;
+            this._timers.set(rule.type, timer);
+
+            //触发时间到
+            if (timer >= rule.interval) {
+                // 重置计时器（考虑可能溢出，减去 interval）
+                this._timers.set(rule.type, timer - rule.interval);
+
+                // 一次性生成 count 个敌人
+                for (let i = 0; i < rule.count; i++) {
+                    EnemyManager.inst.spawn(rule.type);
+                }
+            }
         }
     }
 }
