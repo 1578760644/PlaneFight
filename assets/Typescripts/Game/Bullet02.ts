@@ -6,14 +6,14 @@ const { ccclass, property } = _decorator;
 export class Bullet02 extends Component implements ILauncher {
     //子弹发射速度
     @property
-    private speed: number = 500;
+    private _speed: number = 1000;
 
     //子弹默认移动方向
     private _direction: Vec3 = new Vec3(0, 1, 0);
 
     update(deltaTime: number) {
         const pos = this.node.getPosition();
-        Vec3.scaleAndAdd(pos, pos, this._direction, this.speed * deltaTime)
+        Vec3.scaleAndAdd(pos, pos, this._direction, this._speed * deltaTime)
         this.node.setPosition(pos);
 
         //超出屏幕时回收（调用 BulletManager 回收）

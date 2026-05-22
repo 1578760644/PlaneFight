@@ -13,7 +13,7 @@ interface SpawnRule {
 export class EnemySpawner extends Component {
 
     private rules: SpawnRule[] = [
-        { type: 'Enemy0', interval: 1, count: 2 },
+        { type: 'Enemy0', interval: 0.5, count: 1 },
         { type: 'Enemy1', interval: 5, count: 1 },
         { type: 'Enemy2', interval: 10, count: 1 },
     ];

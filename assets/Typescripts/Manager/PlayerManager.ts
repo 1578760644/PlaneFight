@@ -39,6 +39,8 @@ export class PlayerManager extends Component {
 
     //发射子弹的方法
     private shootTimer: number = 0;
+
+    @property
     private shootInterval: number = 0.3;
 
     //暂时用一下切换子弹

@@ -842,6 +842,7 @@
     "muzzle2": {
       "__id__": 20
     },
+    "shootInterval": 0.3,
     "shootType": 0,
     "_id": "1extaw3U1Em7LE4Pa4Tk9j"
   },

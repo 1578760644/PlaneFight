@@ -150,8 +150,9 @@ export class EnemyManager extends Component {
         //(Math.random() - 0.5) * visibleSize.width 等价于正负 - + visibleSize.width / 2
         //默认两边个各预留80px，实际根据敌人宽度决定
         const randomX = (Math.random() - 0.5) * (visibleSize.width - 2 * margin)
+        const randomY = Math.random() * 10;
         // Y 轴保持生成点高度（屏幕上方外）
-        return new Vec3(spawnPos.x + randomX, spawnPos.y, 0);
+        return new Vec3(spawnPos.x + randomX, spawnPos.y + randomY, 0);
     }
 
     //回收（根据节点上保存的类型自动放入对应池）

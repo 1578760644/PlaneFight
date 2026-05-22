@@ -8,7 +8,7 @@ export class Bullet01 extends Component implements ILauncher {
 
     //子弹发射速度
     @property
-    private _speed: number = 500;
+    private _speed: number = 800;
 
     //子弹默认移动方向
     private _direction: Vec3 = new Vec3(0, 1, 0);
