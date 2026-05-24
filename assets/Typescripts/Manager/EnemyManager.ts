@@ -6,6 +6,8 @@ export interface IEnemy {
     //默认移动方向
     init(direction: Vec3): void;
     onRecycle(): void;
+    //对象池化接口
+    onSpawn(): void;
 }
 
 
@@ -30,6 +32,9 @@ export class EnemyManager extends Component {
         parent: Node;
         compName?: string
     }> = new Map();
+
+    //维护活跃敌人列表，供子弹遍历
+    private activeEnemies: Node[] = [];
 
     //单例
     private static _inst: EnemyManager;
@@ -69,7 +74,6 @@ export class EnemyManager extends Component {
                 compName: compName, //组件名跟预制体名一样就可以避免转换
             });
         }
-
     }
 
 
@@ -130,10 +134,19 @@ export class EnemyManager extends Component {
         //标记类型回收
         enemy[`enemyType`] = type;
 
+        if (comp && typeof (comp as any).onSpawn === 'function') {
+            (comp as any).onSpawn();
+        } else {
+            console.warn('[EnemyManager] 敌人组件没有 onSpawn 方法,compName:', info.compName, '组件:', comp);
+        }
+
         //使用接口类型断言来避免报错，保持类型安全
         if (comp?.init && direction) {
             comp.init(direction);
         }
+
+        //加入活跃列表
+        this.activeEnemies.push(enemy);
     }
 
     // 获取随机生成位置（屏幕外，X 随机）
@@ -161,15 +174,21 @@ export class EnemyManager extends Component {
         const type = node[`enemyType`]
         if (!type) return;
         const info = this.poolMap.get(type);
-        if (info) {
-            //调用敌人自己的重置方法
-            const comp = node.getComponent(info.compName) as unknown as IEnemy | null;
-            if (comp) {
-                comp.onRecycle();
-            }
-            info.pool.put(node);
-        }
+
+        const comp = node.getComponent(info.compName) as unknown as IEnemy | null;
+        if (comp) comp.onRecycle();
+        info.pool.put(node);
+
+        //从活跃列表中移除
+        const idx = this.activeEnemies.indexOf(node);
+        if (idx !== -1) this.activeEnemies.splice(idx, 1);
     }
+
+    //获取活跃敌人列表(供子弹使用)
+    public getActiveEnemies(): Node[] {
+        return this.activeEnemies;
+    }
+
 }
 
 

@@ -120,6 +120,10 @@ export class BulletManager extends Component {
         //在节点上存自定义类型 bulletType：type ，后面需要回收
         bullet[`bulletType`] = type;
 
+        //调用子弹的onSpawn重置状态
+        const bulletComp = bullet.getComponent(info.compName) as any;
+        if (bulletComp?.onSpawn) bulletComp.onSpawn();
+
         //取预制体下的自定义组件名
         const comp = bullet.getComponent(info.compName) as unknown as ILauncher | null;
         //使用接口类型断言来避免报错，保持类型安全
@@ -129,13 +133,16 @@ export class BulletManager extends Component {
     //回收（根据节点上保存的类型自动放入对应池）
     recycleBullet(node: Node) {
         //相当于node.bulletType 通过自定义属性取到对应的类型
-        const type = node[`bulletType`];
-        if (!type) return
+        const type = node['bulletType'];
+        if (!type) return;
         const info = this.poolMap.get(type);
-        if (info) {
-            //把对象回收到池
-            info.pool.put(node);
-        }
+        if (!info) return;
+
+        //调用子弹的 onRecycle
+        const bulletComp = node.getComponent(info.compName) as any;
+        if (bulletComp?.onRecycle) bulletComp.onRecycle();
+
+        info.pool.put(node);
     }
 }
 
