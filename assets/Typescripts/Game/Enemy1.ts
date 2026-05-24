@@ -5,7 +5,6 @@ const { ccclass, property } = _decorator;
 @ccclass('Enemy1')
 export class Enemy1 extends Component implements IEnemy {
     //敌人移动速度
-    @property
     private _speed: number = 500;
 
     //敌人默认移动方向
@@ -24,6 +23,14 @@ export class Enemy1 extends Component implements IEnemy {
     // 实现接口供外部调用，设置方向。用来改变update里的方向
     public init(direction: Vec3) {
         this._direction = direction.clone();
+    }
+
+    public onRecycle(): void {
+
+    }
+
+    public onHitByBullet() {
+
     }
 }
 

@@ -5,6 +5,7 @@ const { ccclass, property } = _decorator;
 export interface IEnemy {
     //默认移动方向
     init(direction: Vec3): void;
+    onRecycle(): void;
 }
 
 
@@ -161,6 +162,11 @@ export class EnemyManager extends Component {
         if (!type) return;
         const info = this.poolMap.get(type);
         if (info) {
+            //调用敌人自己的重置方法
+            const comp = node.getComponent(info.compName) as unknown as IEnemy | null;
+            if (comp) {
+                comp.onRecycle();
+            }
             info.pool.put(node);
         }
     }

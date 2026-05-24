@@ -3,10 +3,9 @@ import { EnemyManager, IEnemy } from '../Manager/EnemyManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Enemy2')
-export class Enemy2 extends Component implements IEnemy{
+export class Enemy2 extends Component implements IEnemy {
     //敌人移动速度
-    @property
-    private _speed: number = 500;
+    private _speed: number = 300;
 
     //敌人默认移动方向
     private _direction: Vec3 = new Vec3(0, -1, 0)
@@ -24,6 +23,14 @@ export class Enemy2 extends Component implements IEnemy{
     // 实现接口供外部调用，设置方向
     public init(direction: Vec3) {
         this._direction = direction.clone();
+    }
+
+    public onRecycle(): void {
+
+    }
+
+    public onHitByBullet() {
+
     }
 }
 

@@ -5,8 +5,7 @@ const { ccclass, property } = _decorator;
 @ccclass('Bullet02')
 export class Bullet02 extends Component implements ILauncher {
     //子弹发射速度
-    @property
-    private _speed: number = 1000;
+    private _speed: number = 1500;
 
     //子弹默认移动方向
     private _direction: Vec3 = new Vec3(0, 1, 0);

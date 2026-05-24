@@ -31,10 +31,16 @@
       },
       {
         "__id__": 8
+      },
+      {
+        "__id__": 10
+      },
+      {
+        "__id__": 12
       }
     ],
     "_prefab": {
-      "__id__": 10
+      "__id__": 14
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -183,11 +189,102 @@
     "__prefab": {
       "__id__": 9
     },
+    "_speed": 500,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
     "fileId": "91bIlXL8ZPkZQFCU012+AA"
+  },
+  {
+    "__type__": "cc.RigidBody2D",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 11
+    },
+    "enabledContactListener": true,
+    "bullet": false,
+    "awakeOnLoad": true,
+    "_group": 2,
+    "_type": 1,
+    "_allowSleep": true,
+    "_gravityScale": 1,
+    "_linearDamping": 0,
+    "_angularDamping": 0,
+    "_linearVelocity": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_angularVelocity": 0,
+    "_fixedRotation": false,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "41DmvPGOZDgrV1jUujXlRi"
+  },
+  {
+    "__type__": "cc.PolygonCollider2D",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 13
+    },
+    "tag": 0,
+    "_group": 2,
+    "_density": 1,
+    "_sensor": false,
+    "_friction": 0.2,
+    "_restitution": 0,
+    "_offset": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": -0.2
+    },
+    "_points": [
+      {
+        "__type__": "cc.Vec2",
+        "x": -33.5,
+        "y": 14.7
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -33.6,
+        "y": -15.4
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 0.1,
+        "y": -44.4
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 33.7,
+        "y": -16.1
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 33.8,
+        "y": 14.8
+      }
+    ],
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "47FmhVYrRHG6nuKVt4mW/O"
   },
   {
     "__type__": "cc.PrefabInfo",

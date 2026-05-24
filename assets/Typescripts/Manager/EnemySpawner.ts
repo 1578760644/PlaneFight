@@ -8,7 +8,7 @@ interface SpawnRule {
     count: number       //生成数量
 }
 
-
+//目前存在问题，生成的敌人会重叠。后续需要做距离检测
 @ccclass('EnemySpawner')
 export class EnemySpawner extends Component {
 
@@ -30,7 +30,7 @@ export class EnemySpawner extends Component {
     protected update(dt: number): void {
         for (const rule of this.rules) {
             //取到每一个map下对应的number
-            let timer = this._timers.get(rule.type) + dt;
+            let timer = (this._timers.get(rule.type) ?? 0) + dt;
             this._timers.set(rule.type, timer);
 
             //触发时间到

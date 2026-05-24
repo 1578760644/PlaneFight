@@ -1,5 +1,7 @@
-import { _decorator, Component, Node, Vec3, view } from 'cc';
+import { _decorator, Collider2D, Component, Contact2DType, IPhysics2DContact, Node, RigidBody2D, Vec3, view } from 'cc';
 import { BulletManager, ILauncher } from '../Manager/BulletManager';
+import { Enemy0 } from './Enemy0';
+import { EnemyManager } from '../Manager/EnemyManager';
 const { ccclass, property } = _decorator;
 
 
@@ -7,11 +9,18 @@ const { ccclass, property } = _decorator;
 export class Bullet01 extends Component implements ILauncher {
 
     //子弹发射速度
-    @property
-    private _speed: number = 800;
+    private _speed: number = 1000;
 
     //子弹默认移动方向
     private _direction: Vec3 = new Vec3(0, 1, 0);
+
+    protected onLoad(): void {
+        const collider = this.getComponent(Collider2D);
+        if (collider) {
+            collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+        }
+    }
+
 
     update(deltaTime: number) {
         const pos = this.node.getPosition();
@@ -28,6 +37,14 @@ export class Bullet01 extends Component implements ILauncher {
         //超出屏幕时回收（调用 BulletManager 回收）
         if (pos.y > view.getVisibleSize().height + 10) {
             BulletManager.inst.recycleBullet(this.node);
+        }
+    }
+
+    onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
+        const enemy0 = otherCollider.node.getComponent(Enemy0);
+        if (enemy0 && !enemy0._isDead) {
+            BulletManager.inst.recycleBullet(this.node);
+            enemy0.onHitByBullet();
         }
     }
 
