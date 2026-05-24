@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 @ccclass('Enemy0')
 export class Enemy0 extends Component implements IEnemy {
     //敌人移动速度
-    private _speed: number = 800;
+    private _speed: number = 700;
 
     //敌人默认移动方向
     private _direction: Vec3 = new Vec3(0, -1, 0)

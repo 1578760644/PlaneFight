@@ -147,6 +147,51 @@
     "__prefab": {
       "__id__": 7
     },
+    "defaultSpriteFrame": {
+      "__uuid__": "6075f801-9e29-473f-876e-d59741b30230@f9941",
+      "__expectedType__": "cc.SpriteFrame"
+    },
+    "explosionFrames": [
+      {
+        "__uuid__": "464e026a-5d53-4c1a-abd3-c16aa4c4807e@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "81bf24cb-cd79-4b9e-a256-5e3886ab6356@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "f6bceee1-60aa-4d61-804e-030415272774@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "49eadfc4-060a-4510-8b70-8d5896397d85@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "87603c09-9589-403a-9eab-bba0f2fea582@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "42fdb2c7-05fd-41ea-9b93-ed26a8d7729f@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      }
+    ],
+    "frameInterval": 0.1,
+    "hurtFrames": [
+      {
+        "__uuid__": "b563a990-e8ec-492b-b0aa-a6f1d4ac80aa@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "276eb32a-1471-40ca-a282-4377bcfcc66e@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      }
+    ],
+    "hurtFrameInterval": 0.05,
+    "spriteComp": {
+      "__id__": 4
+    },
     "_id": ""
   },
   {

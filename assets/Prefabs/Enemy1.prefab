@@ -147,6 +147,38 @@
     "__prefab": {
       "__id__": 7
     },
+    "hurtFrames": [
+      {
+        "__uuid__": "ad89de1e-af76-44e0-8776-dd2cdac9358e@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      }
+    ],
+    "defaultSpriteFrame": {
+      "__uuid__": "9fc22b5d-d4c2-4b1e-a438-c3c36c9a2458@f9941",
+      "__expectedType__": "cc.SpriteFrame"
+    },
+    "explosionFrames": [
+      {
+        "__uuid__": "650a8054-7b3a-4cad-81e6-eaf1f1cdaa44@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "87d30507-dd7a-4ffd-becb-482d08903c71@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "0ef430f6-58d3-45b5-b828-dace8ea0edbe@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "ba914c0a-f14d-449b-87b2-dd3ef7f7ac82@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      }
+    ],
+    "frameInterval": 0.05,
+    "spriteComp": {
+      "__id__": 4
+    },
     "_id": ""
   },
   {
