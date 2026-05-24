@@ -16,7 +16,7 @@ export class Bullet02 extends Component implements ILauncher {
         this.node.setPosition(pos);
 
         //超出屏幕时回收（调用 BulletManager 回收）
-        if (pos.y > view.getVisibleSize().height + 10) {
+        if (pos.y > view.getVisibleSize().height + 1) {
             BulletManager.inst.recycleBullet(this.node);
         }
     }

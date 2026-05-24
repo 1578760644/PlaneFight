@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, NodePool, Prefab, Vec3 } from 'cc';
+import { _decorator, Component, instantiate, Node, NodePool, Prefab, RigidBody2D, Vec2, Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 //让bullet调用接口
@@ -102,7 +102,19 @@ export class BulletManager extends Component {
         const info = this.poolMap.get(type);
         if (!info) return null
         //如果对象池中的可用数量大于0就通过get方法取出来，没有就实例化新的节点
-        return info.pool.size() > 0 ? info.pool.get() : instantiate(info.prefab);
+        if (info.pool.size() > 0) {
+            const node = info.pool.get();
+            // ---------- 新增：处理子弹刚体 ----------
+            const body = node.getComponent(RigidBody2D);
+            if (body) {
+                body.enabled = true;
+                body.linearVelocity = new Vec2(0, 0);
+                body.angularVelocity = 0;
+            }
+            return node;
+        } else {
+            return instantiate(info.prefab);
+        }
     }
 
     //通用发射口
@@ -120,6 +132,11 @@ export class BulletManager extends Component {
         //在节点上存自定义类型 bulletType：type ，后面需要回收
         bullet[`bulletType`] = type;
 
+        // ---------- 新增：调用子弹的 onSpawn 重置状态 ----------
+        const bulletComp = bullet.getComponent(info.compName) as any;
+        if (bulletComp?.onSpawn) bulletComp.onSpawn();
+        // ----------------------------------------------------
+
         //取预制体下的自定义组件名
         const comp = bullet.getComponent(info.compName) as unknown as ILauncher | null;
         //使用接口类型断言来避免报错，保持类型安全
@@ -132,6 +149,18 @@ export class BulletManager extends Component {
         const type = node[`bulletType`];
         if (!type) return
         const info = this.poolMap.get(type);
+
+        // ---------- 新增：调用子弹的 onRecycle ----------
+        const bulletComp = node.getComponent(info.compName) as any;
+        if (bulletComp?.onRecycle) bulletComp.onRecycle();
+        // -------------------------------------------------
+
+        // 安全禁用刚体，防止 put 时报错
+        const body = node.getComponent(RigidBody2D);
+        if (body && body.enabled) {
+            try { body.enabled = false; } catch (e) { }
+        }
+
         if (info) {
             //把对象回收到池
             info.pool.put(node);

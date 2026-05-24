@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, NodePool, Pool, Prefab, UITransform, Vec3, view, View } from 'cc';
+import { _decorator, Component, instantiate, Node, NodePool, Pool, Prefab, RigidBody2D, Sprite, UITransform, Vec2, Vec3, view, View } from 'cc';
 const { ccclass, property } = _decorator;
 
 //敌人接口
@@ -6,6 +6,8 @@ export interface IEnemy {
     //默认移动方向
     init(direction: Vec3): void;
     onRecycle(): void;
+    // 从池中取出激活时调用
+    onSpawn(): void;
 }
 
 
@@ -99,12 +101,26 @@ export class EnemyManager extends Component {
     }
 
     //获取(从对应池)
+    //改动：取出时重新启用刚体，并清除物理残留
     private getEnemy(type: string): Node {
         //通过type标签取出对应的预制体
         const info = this.poolMap.get(type);
         if (!info) return null;
-        //如果对象池中的可用数量大于0就通过get方法取出来，没有就实例化新的节点
-        return info.pool.size() > 0 ? info.pool.get() : instantiate(info.prefab);
+
+        let node: Node;
+        if (info.pool.size() > 0) {
+            node = info.pool.get();
+            //重新激活刚体
+            const body = node.getComponent(RigidBody2D);
+            if (body) {
+                body.enabled = true;
+                body.linearVelocity = new Vec2(0, 0); // 清除残留速度
+                body.angularVelocity = 0;
+            }
+        } else {
+            node = instantiate(info.prefab);
+        }
+        return node;
     }
 
 
@@ -129,8 +145,9 @@ export class EnemyManager extends Component {
         }
         //标记类型回收
         enemy[`enemyType`] = type;
+        // 先调用 onSpawn 重置状态（包括设置默认帧）
+        if (comp) comp.onSpawn();
 
-        //使用接口类型断言来避免报错，保持类型安全
         if (comp?.init && direction) {
             comp.init(direction);
         }
@@ -157,18 +174,23 @@ export class EnemyManager extends Component {
     }
 
     //回收（根据节点上保存的类型自动放入对应池）
+    // 改动：回收前先调用 onRecycle，并安全禁用刚体
     public recycleEnemy(node: Node) {
         const type = node[`enemyType`]
         if (!type) return;
         const info = this.poolMap.get(type);
-        if (info) {
-            //调用敌人自己的重置方法
-            const comp = node.getComponent(info.compName) as unknown as IEnemy | null;
-            if (comp) {
-                comp.onRecycle();
-            }
-            info.pool.put(node);
+        if (!info) return;
+
+        //调用敌人自己的重置方法
+        const comp = node.getComponent(info.compName) as unknown as IEnemy | null;
+        if (comp) comp.onRecycle();
+
+        // 关键：安全禁用刚体，避免 put 时物理引擎报错
+        const body = node.getComponent(RigidBody2D);
+        if (body && body.enabled) {
+            try { body.enabled = false; } catch (e) { }
         }
+        info.pool.put(node);
     }
 }
 
