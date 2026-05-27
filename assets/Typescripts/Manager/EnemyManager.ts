@@ -33,7 +33,7 @@ export class EnemyManager extends Component {
         compName?: string
     }> = new Map();
 
-    //维护活跃敌人列表，供子弹遍历
+    //维护活跃敌人列表，供子弹和player遍历
     private activeEnemies: Node[] = [];
 
     //单例
@@ -184,7 +184,7 @@ export class EnemyManager extends Component {
         if (idx !== -1) this.activeEnemies.splice(idx, 1);
     }
 
-    //获取活跃敌人列表(供子弹使用)
+    //获取活跃敌人列表(供子弹和player使用)
     public getActiveEnemies(): Node[] {
         return this.activeEnemies;
     }

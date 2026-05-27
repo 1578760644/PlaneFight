@@ -1,4 +1,4 @@
-import { _decorator, clamp, Component, EventMouse, EventTouch, Input, input, instantiate, Node, Prefab, Vec2, Vec3, view } from 'cc';
+import { _decorator, clamp, Component, EventMouse, EventTouch, Input, input, instantiate, Node, Prefab, UITransform, Vec2, Vec3, view } from 'cc';
 import { BulletManager } from '../Manager/BulletManager';
 const { ccclass, property } = _decorator;
 
@@ -47,18 +47,17 @@ export class PlayerManager extends Component {
     @property
     shootType: ShootType = ShootType.OneShoot;
 
+    private _isPlayerAlive: boolean = true;
+
     protected onLoad(): void {
         input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this)
     }
 
     start() {
-        // 计算边界（飞机中心不超出屏幕）
-        const halfW = this.visibleSize.width / 2;
-        const halfH = this.visibleSize.height / 2;
-        this.minX = -halfW;
-        this.maxX = halfW;
-        this.minY = -halfH;
-        this.maxY = halfH;
+        this._isPlayerAlive = true;
+
+        //计算边界
+        this.calculateBoundary();
 
         //设置飞机生成位置
         this.setPlayerSpawnPositon();
@@ -68,6 +67,8 @@ export class PlayerManager extends Component {
     }
 
     update(deltaTime: number) {
+        if (!this._isPlayerAlive) return; //死亡后结束射击
+
         switch (this.shootType) {
             case ShootType.OneShoot:
                 this.oneShoot(deltaTime);
@@ -82,8 +83,21 @@ export class PlayerManager extends Component {
         input.off(Input.EventType.TOUCH_MOVE, this.onTouchMove, this)
     }
 
+    // 计算边界（飞机中心不超出屏幕）
+    public calculateBoundary() {
+        const halfW = this.visibleSize.width / 2;
+        const halfH = this.visibleSize.height / 2;
+        this.minX = -halfW;
+        this.maxX = halfW;
+        this.minY = -halfH;
+        this.maxY = halfH;
+    }
+
     //控制player移动
     onTouchMove(event: EventTouch) {
+        //先检查玩家是否存活
+        if (!this._isPlayerAlive || !this.player) return;
+
         //获取player节点位置
         let playerPos = this.player.getPosition();
 
@@ -152,6 +166,15 @@ export class PlayerManager extends Component {
             BulletManager.inst.fire('Bullet02', worldPos, direction)
         }
     }
+
+    //由player调用的死亡回调
+    public onPlayerDied() {
+        if (!this._isPlayerAlive) return;
+        this._isPlayerAlive = false;
+        //停止触摸监听移动
+        input.off(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
+    }
+
 }
 
 
