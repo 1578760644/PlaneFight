@@ -51,7 +51,7 @@ export class Player extends Component {
             } else {
                 //闪烁效果：根据剩余时间快速切换透明度
                 if (this._sprite) {
-                    //每0.1秒切换一次可见性
+                    //每0.1秒切换一次可见性，floor的作用向下取整，*10目前是每0.1秒闪烁一次。间隔为 T 秒，乘数为 1 / T
                     const blink = Math.floor(this._invincibleTimer * 10) % 2 === 0;
                     this._sprite.color = blink ? this._originalColor.clone() : new Color(255, 255, 255, 100);
                 }
@@ -135,6 +135,9 @@ export class Player extends Component {
                     //先暂用跟子弹碰撞到的同一套逻辑
                     enemyComp.onHitByBullet()
                     break;
+                    // break跳出 for 循环。
+                    // 作用：同一帧内只处理一个敌人的碰撞。避免飞机同时撞到两个敌人时瞬间扣两次血（即便无敌期间，也可能多个敌人一起被销毁，但通常一次碰撞处理一个足够）。
+                    // 如果你希望同一帧可以同时撞到多个敌人（比如无敌时只销毁敌人但不扣血，允许同时销毁多个），可以把这里的 break 移除。但对于大多数弹幕游戏，一次碰撞只处理一个敌人更可控。
                 }
             }
         }
