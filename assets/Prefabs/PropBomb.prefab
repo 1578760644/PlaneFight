@@ -147,6 +147,7 @@
     "__prefab": {
       "__id__": 7
     },
+    "rewardParent": null,
     "_id": ""
   },
   {
@@ -162,7 +163,6 @@
       "__id__": 0
     },
     "fileId": "3fD1T/xjFM8JV9AHtGqQjY",
-    "instance": null,
     "targetOverrides": null
   }
 ]
