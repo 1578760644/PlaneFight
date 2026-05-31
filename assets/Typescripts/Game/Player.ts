@@ -165,7 +165,7 @@ export class Player extends Component {
                     //拾取奖励
                     rewardComp.onPickUp();
 
-                    //判断类型并触发效果
+                    //判断类型并触发效果  instanceof判断 rewardComp 是不是 PropBullet02 这个类的实例。
                     if (rewardComp instanceof PropBullet02) {
                         const pm = this.node.parent?.getComponent(PlayerManager);
                         if (pm) {

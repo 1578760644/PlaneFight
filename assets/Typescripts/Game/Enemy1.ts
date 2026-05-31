@@ -92,9 +92,9 @@ export class Enemy1 extends Component implements IEnemy {
         this._direction = direction.clone();
     }
 
-    public onHitByBullet(): void {
+    public onHitByBullet(damage: number = 1): void {
         if (this._isDead) return;
-        this.currentHp--;
+        this.currentHp -= damage;
 
         if (this.currentHp <= 0) {
             //死亡爆炸
