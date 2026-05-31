@@ -175,6 +175,19 @@ export class PlayerManager extends Component {
         input.off(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
     }
 
+    //临时切换到双发模式，持续duration秒
+    public activateTwoShootTemporart(duration: number) {
+        //如果已经处于双发，取消之前的恢复任务，重新计时
+        this.unschedule(this.restoreOneShoot);
+
+        this.shootType = ShootType.TwoShoot;
+        this.scheduleOnce(this.restoreOneShoot, duration);
+    }
+
+    private restoreOneShoot() {
+        this.shootType = ShootType.OneShoot;
+    }
+
 }
 
 

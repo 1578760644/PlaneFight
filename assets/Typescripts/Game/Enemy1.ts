@@ -8,8 +8,8 @@ export class Enemy1 extends Component implements IEnemy {
     private _speed: number = 500;
 
     //最大血量和当前血量
-    public maxHp: number = 3;
-    public currentHp: number = 3;
+    public maxHp: number = 4;
+    public currentHp: number = 4;
 
     //受击闪烁相关
     @property([SpriteFrame])

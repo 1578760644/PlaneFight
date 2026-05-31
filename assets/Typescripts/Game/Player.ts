@@ -4,6 +4,9 @@ import { Enemy0 } from './Enemy0';
 import { Enemy1 } from './Enemy1';
 import { Enemy2 } from './Enemy2';
 import { PlayerManager } from '../Manager/PlayerManager';
+import { RewardManager } from '../Manager/RewardManager';
+import { PropBomb } from './PropBomb';
+import { PropBullet02 } from './PropBullet02';
 const { ccclass, property } = _decorator;
 
 @ccclass('Player')
@@ -138,6 +141,40 @@ export class Player extends Component {
                     // break跳出 for 循环。
                     // 作用：同一帧内只处理一个敌人的碰撞。避免飞机同时撞到两个敌人时瞬间扣两次血（即便无敌期间，也可能多个敌人一起被销毁，但通常一次碰撞处理一个足够）。
                     // 如果你希望同一帧可以同时撞到多个敌人（比如无敌时只销毁敌人但不扣血，允许同时销毁多个），可以把这里的 break 移除。但对于大多数弹幕游戏，一次碰撞只处理一个敌人更可控。
+                }
+            }
+        }
+
+        //获取当前活跃奖励物品
+        const activeRewards = RewardManager.inst.getActiveRewards();
+        for (const rewardNode of activeRewards) {
+            if (!rewardNode || !rewardNode.active) continue;
+
+            //尝试获取奖励组件
+            let rewardComp: any = rewardNode.getComponent(PropBomb);
+            if (!rewardComp) rewardComp = rewardNode.getComponent(PropBullet02);
+
+            if (rewardComp) {
+                const rewardUI = rewardNode.getComponent(UITransform);
+                if (!rewardUI) continue;
+                const rewardRadius = Math.max(rewardUI.width, rewardUI.height) / 2;
+
+                const totalRadius = playerRadius + rewardRadius;
+                const dis = Vec3.distance(playerPos, rewardNode.getWorldPosition());
+                if (dis < totalRadius) {
+                    //拾取奖励
+                    rewardComp.onPickUp();
+
+                    //判断类型并触发效果
+                    if (rewardComp instanceof PropBullet02) {
+                        const pm = this.node.parent?.getComponent(PlayerManager);
+                        if (pm) {
+                            pm.activateTwoShootTemporart(8);
+                        }
+                    } else if (rewardComp instanceof PropBomb) {
+
+                    }
+                    break;
                 }
             }
         }

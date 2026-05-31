@@ -1,8 +1,9 @@
 import { _decorator, Component, Node, Vec3, view } from 'cc';
+import { IReword, RewardManager } from '../Manager/RewardManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('PropBullet02')
-export class PropBullet02 extends Component {
+export class PropBullet02 extends Component implements IReword {
     //奖励移动速度
     private _speed: number = 500;
 
@@ -32,15 +33,31 @@ export class PropBullet02 extends Component {
         const angle = Math.sin(this._swingTime) * this.swingAngle;
         this.node.angle = angle;
 
-        this.checkCollision();
-
         if (pos.y < - view.getVisibleSize().height / 2 - 10) {
             this.node.destroy();
         }
     }
 
-    private checkCollision() {
-        const rewardPos = this.node.getWorldPosition();
+    // 实现 IReword 接口
+    public init(direction: Vec3) {
+        this._direction = direction.clone();
+    }
+
+    public onRecycle() {
+        this._swingTime = 0;  // 重置摆动时间
+        // 如果有其他需要重置的状态可以加在这里
+    }
+
+    public onSpawn() {
+        // 从对象池取出时重置状态（如速度、角度等）
+        this._swingTime = 0;
+        // 设置默认方向，或者保持外部传入的方向
+        this._direction.set(0, -1, 0);  // 或根据 init 传入，这里先重置
+    }
+
+    // 自定义：被玩家拾取时调用
+    public onPickUp() {
+        RewardManager.inst.recycleReword(this.node);
     }
 }
 

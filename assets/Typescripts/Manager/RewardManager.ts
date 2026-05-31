@@ -104,7 +104,7 @@ export class RewardManager extends Component {
         const reword = this.getReward(type);
         reword.setParent(this.rewordParent);
         if (worldPos) {
-            reword.setWorldPosition(worldPos); if (!type) return;
+            reword.setWorldPosition(worldPos);
         } else {
             const randomPos = this.getRandomSpawnPos(reword);
             reword.setWorldPosition(randomPos);
