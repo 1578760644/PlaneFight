@@ -29,6 +29,9 @@ export class RewardManager extends Component {
         compName: string
     }> = new Map();
 
+    //活跃奖励列表，供player遍历调用
+    private activeRewards: Node[] = [];
+
     //单例
     private static _inst: RewardManager;
     public static get inst(): RewardManager {
@@ -89,7 +92,8 @@ export class RewardManager extends Component {
             }
         }
         const randomX = (Math.random() - 0.5) * (visibleSize.width - 2 * margin);
-        return new Vec3(spawnPos.x + randomX, spawnPos.y, 0)
+        const randomY = Math.random() * 10
+        return new Vec3(spawnPos.x + randomX, spawnPos.y + randomY, 0)
     }
 
     //生成
@@ -119,6 +123,8 @@ export class RewardManager extends Component {
         if (comp?.init && direction) {
             comp.init(direction);
         }
+
+        this.activeRewards.push(reword);
     }
 
     //回收
@@ -131,6 +137,14 @@ export class RewardManager extends Component {
         if (comp?.onRecycle) comp.onRecycle();
 
         info.pool.put(node);
+
+        //从活跃列表移出
+        const idx = this.activeRewards.indexOf(node);
+        if (idx !== -1) this.activeRewards.splice(idx, 1);
+    }
+
+    public getActiveRewards() {
+        return this.activeRewards;
     }
 }
 
