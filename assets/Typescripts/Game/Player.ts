@@ -172,7 +172,7 @@ export class Player extends Component {
                             pm.activateTwoShootTemporart(8);
                         }
                     } else if (rewardComp instanceof PropBomb) {
-
+                        RewardManager.inst.addBomb();
                     }
                     break;
                 }

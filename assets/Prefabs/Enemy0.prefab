@@ -169,7 +169,7 @@
         "__expectedType__": "cc.SpriteFrame"
       }
     ],
-    "_frameInterval": 0.5,
+    "frameInterval": 0.05,
     "spriteComp": {
       "__id__": 4
     },

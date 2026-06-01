@@ -32,6 +32,9 @@ export class RewardManager extends Component {
     //活跃奖励列表，供player遍历调用
     private activeRewards: Node[] = [];
 
+    //炸弹数量
+    private _bombCount: number = 0;
+
     //单例
     private static _inst: RewardManager;
     public static get inst(): RewardManager {
@@ -39,6 +42,10 @@ export class RewardManager extends Component {
             this._inst = new RewardManager();
         }
         return this._inst;
+    }
+
+    public get bombCount(): number {
+        return this._bombCount;
     }
 
     protected onLoad(): void {
@@ -145,6 +152,10 @@ export class RewardManager extends Component {
 
     public getActiveRewards() {
         return this.activeRewards;
+    }
+
+    public addBomb() {
+        this._bombCount++;
     }
 }
 
