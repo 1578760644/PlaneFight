@@ -1,5 +1,6 @@
 import { _decorator, Component, Node } from 'cc';
 import { RewardManager } from './RewardManager';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 interface RewardSpawnRule {
@@ -27,6 +28,7 @@ export class RewardSpawner extends Component {
     }
 
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
         for (const rule of this.rules) {
             let timer = (this._timers.get(rule.type) ?? 0) + deltaTime;
             this._timers.set(rule.type, timer);

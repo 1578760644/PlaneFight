@@ -1,5 +1,6 @@
 import { _decorator, clamp, Component, EventMouse, EventTouch, Input, input, instantiate, Node, Prefab, UITransform, Vec2, Vec3, view } from 'cc';
 import { BulletManager } from '../Manager/BulletManager';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 //通过接口和数组来灵活调用子弹，暂时没有用到
@@ -75,6 +76,7 @@ export class PlayerManager extends Component {
     }
 
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
         if (!this._isPlayerAlive) return; //死亡后结束射击
 
         switch (this.shootType) {
@@ -103,6 +105,7 @@ export class PlayerManager extends Component {
 
     //控制player移动
     onTouchMove(event: EventTouch) {
+        if (GameManager.inst.isPaused) return;
         //先检查玩家是否存活
         if (!this._isPlayerAlive || !this.player) return;
 

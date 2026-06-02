@@ -1,5 +1,6 @@
 import { _decorator, Component, Node, Sprite, SpriteFrame, Vec3, view } from 'cc';
 import { EnemyManager, IEnemy } from '../Manager/EnemyManager';
+import { GameManager } from '../Manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Enemy2')
@@ -55,6 +56,7 @@ export class Enemy2 extends Component implements IEnemy {
 
     // 在 update 中添加受击动画播放逻辑（放在爆炸动画判断之前）
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
         if (this._shouldRecycle) {
             this._shouldRecycle = false;
             EnemyManager.inst.recycleEnemy(this.node);

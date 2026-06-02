@@ -1,4 +1,5 @@
 import { _decorator, Component, instantiate, Node, NodePool, Pool, Prefab, UITransform, Vec3, view, View } from 'cc';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 //敌人接口

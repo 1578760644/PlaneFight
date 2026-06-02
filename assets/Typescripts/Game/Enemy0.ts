@@ -1,5 +1,6 @@
 import { _decorator, Animation, Component, Sprite, SpriteFrame, Vec3, view } from 'cc';
 import { EnemyManager, IEnemy } from '../Manager/EnemyManager';
+import { GameManager } from '../Manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Enemy0')
@@ -46,6 +47,7 @@ export class Enemy0 extends Component implements IEnemy {
     }
 
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
         // 如果标记待回收，则执行回收（此时已经离开碰撞回调）
         if (this._shouldRecycle) {
             this._shouldRecycle = false; //防止重复

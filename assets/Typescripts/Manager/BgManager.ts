@@ -1,5 +1,6 @@
 import { _decorator, Component, Node, UITransform, view } from 'cc';
 import { SceneManager } from '../Manager/SceneManager';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BgManager')
@@ -26,6 +27,7 @@ export class BgManager extends Component {
     }
 
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
         //背景滚动
         this.BgScroll(deltaTime);
     }

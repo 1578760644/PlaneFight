@@ -7,6 +7,7 @@ import { PlayerManager } from '../Manager/PlayerManager';
 import { RewardManager } from '../Manager/RewardManager';
 import { PropBomb } from './PropBomb';
 import { PropBullet02 } from './PropBullet02';
+import { GameManager } from '../Manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Player')
@@ -35,7 +36,7 @@ export class Player extends Component {
     }
 
     update(deltaTime: number) {
-        if (this._isDead) return;   // 死亡后不再检测碰撞               
+        if (this._isDead || GameManager.inst.isPaused) return;   // 死亡和暂停后不再检测碰撞               
         this.onInvincible(deltaTime);
         this.checkCollision();
     }

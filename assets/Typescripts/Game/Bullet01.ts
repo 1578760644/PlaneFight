@@ -4,6 +4,7 @@ import { Enemy0 } from './Enemy0';
 import { EnemyManager } from '../Manager/EnemyManager';
 import { Enemy1 } from './Enemy1';
 import { Enemy2 } from './Enemy2';
+import { GameManager } from '../Manager/GameManager';
 const { ccclass, property } = _decorator;
 
 
@@ -36,6 +37,7 @@ export class Bullet01 extends Component implements ILauncher {
     }
 
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
         //执行回收
         if (this._shouldRecycle) {
             BulletManager.inst.recycleBullet(this.node);

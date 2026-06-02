@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, Vec3, view } from 'cc';
 import { BulletManager, ILauncher } from '../Manager/BulletManager';
 import { SubBullet } from './SubBullet';
+import { GameManager } from '../Manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Bullet02')
@@ -34,6 +35,7 @@ export class Bullet02 extends Component implements ILauncher {
 
 
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
         if (this._shouldRecycle) {
             BulletManager.inst.recycleBullet(this.node);
             this._shouldRecycle = false;

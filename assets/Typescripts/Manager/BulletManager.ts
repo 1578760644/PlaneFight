@@ -1,4 +1,5 @@
 import { _decorator, Component, instantiate, Node, NodePool, Prefab, Vec3 } from 'cc';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 //让bullet调用接口

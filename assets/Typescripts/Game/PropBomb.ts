@@ -1,5 +1,6 @@
 import { _decorator, Component, Node, Vec3, view } from 'cc';
 import { IReword, RewardManager } from '../Manager/RewardManager';
+import { GameManager } from '../Manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('PropBomb')
@@ -23,6 +24,7 @@ export class PropBomb extends Component implements IReword {
     }
 
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
 
         //移动
         const pos = this.node.getPosition();

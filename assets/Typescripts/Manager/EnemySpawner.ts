@@ -1,5 +1,6 @@
 import { _decorator, Component, Node } from 'cc';
 import { EnemyManager } from './EnemyManager';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 interface SpawnRule {
@@ -28,6 +29,7 @@ export class EnemySpawner extends Component {
     }
 
     protected update(dt: number): void {
+        if (GameManager.inst.isPaused) return;
         for (const rule of this.rules) {
             //取到每一个map下对应的number
             let timer = (this._timers.get(rule.type) ?? 0) + dt;

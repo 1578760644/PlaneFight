@@ -1,5 +1,6 @@
 import { _decorator, Component, Node, Vec3, view } from 'cc';
 import { IReword, RewardManager } from '../Manager/RewardManager';
+import { GameManager } from '../Manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('PropBullet02')
@@ -23,6 +24,7 @@ export class PropBullet02 extends Component implements IReword {
     }
 
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
 
         const pos = this.node.getPosition();
         Vec3.scaleAndAdd(pos, pos, this._direction, this._speed * deltaTime);

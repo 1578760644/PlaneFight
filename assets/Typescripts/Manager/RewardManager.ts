@@ -1,4 +1,5 @@
 import { _decorator, Component, instantiate, Node, NodePool, Prefab, UITransform, Vec3, view } from 'cc';
+import { GameManager } from './GameManager';
 const { ccclass, property } = _decorator;
 
 export interface IReword {

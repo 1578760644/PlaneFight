@@ -1,5 +1,6 @@
 import { _decorator, Component, Node, Sprite, SpriteFrame, Vec3, view } from 'cc';
 import { EnemyManager, IEnemy } from '../Manager/EnemyManager';
+import { GameManager } from '../Manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Enemy1')
@@ -50,6 +51,7 @@ export class Enemy1 extends Component implements IEnemy {
     }
 
     update(deltaTime: number) {
+        if (GameManager.inst.isPaused) return;
         if (this._shouldRecycle) {
             this._shouldRecycle = false;
             EnemyManager.inst.recycleEnemy(this.node);
