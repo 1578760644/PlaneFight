@@ -1,4 +1,4 @@
-import { _decorator, Animation, color, Color, Component, Node, Sprite, UITransform, Vec3 } from 'cc';
+import { _decorator, Animation, color, Color, Component, director, Node, Sprite, UITransform, Vec3 } from 'cc';
 import { EnemyManager } from '../Manager/EnemyManager';
 import { Enemy0 } from './Enemy0';
 import { Enemy1 } from './Enemy1';
@@ -78,6 +78,14 @@ export class Player extends Component {
                 if (manager) {
                     manager.onPlayerDied();
                 }
+
+                // // 暂停整个游戏（敌人、子弹、输入等全部停止）
+                // director.pause();
+
+                // 1 秒后恢复并跳转到游戏结束场景
+                setTimeout(() => {
+                    director.loadScene('End');   // 确保你已创建名为 'EndScene' 的场景
+                }, 1000);
             });
             anim.play('Player_Down');
         } else {
@@ -87,6 +95,10 @@ export class Player extends Component {
             if (manager) {
                 manager.onPlayerDied();
             }
+            // 无动画时也跳转
+            setTimeout(() => {
+                director.loadScene('End');
+            }, 1000);
         }
 
     }

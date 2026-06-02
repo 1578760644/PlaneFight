@@ -16,6 +16,11 @@ enum ShootType {
 
 @ccclass('PlayerManager')
 export class PlayerManager extends Component {
+    private static _inst: PlayerManager;
+    public static get inst(): PlayerManager {
+        return this._inst;
+    }
+
     @property(Node)
     public player: Node | null = null;
     @property(Node)
@@ -50,6 +55,9 @@ export class PlayerManager extends Component {
     private _isPlayerAlive: boolean = true;
 
     protected onLoad(): void {
+        //将自己设为单例
+        PlayerManager._inst = this;
+
         input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this)
     }
 
