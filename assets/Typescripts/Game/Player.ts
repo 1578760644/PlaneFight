@@ -9,6 +9,7 @@ import { PropBomb } from './PropBomb';
 import { PropBullet02 } from './PropBullet02';
 import { GameManager } from '../Manager/GameManager';
 import { AudioManager } from '../Manager/AudioManager';
+import { GameData } from '../Manager/GameData';
 const { ccclass, property } = _decorator;
 
 @ccclass('Player')
@@ -84,6 +85,15 @@ export class Player extends Component {
                 // // 暂停整个游戏（敌人、子弹、输入等全部停止）
                 // director.pause();
 
+                //获取当前得分
+                const currentScore = GameManager.inst.score;
+                GameData.inst.currentScore = currentScore;
+
+                // 如果当前分数超过历史最高分，则更新
+                if (currentScore > GameData.inst.highScore) {
+                    GameData.inst.highScore = currentScore;
+                }
+
                 // 1 秒后恢复并跳转到游戏结束场景
                 setTimeout(() => {
                     director.loadScene('End');   // 确保你已创建名为 'EndScene' 的场景
@@ -137,7 +147,6 @@ export class Player extends Component {
                     if (!this._isInvincible) {
                         //处理player血量问题等
                         this.playerHp--
-                        console.log('当前血量', this.playerHp);
 
                         if (this.playerHp <= 0) {
                             AudioManager.inst.playGameOver();
