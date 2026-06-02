@@ -17,17 +17,19 @@ export class BombUI extends Component {
     update(deltaTime: number) {
         const currentCount = RewardManager.inst.bombCount;
         if (currentCount !== this._previousCount) {
+            // 只有首次从 -1 变为 0 时不播放动画（游戏启动时）
+            const animate = !(this._previousCount === -1 && currentCount === 0);
             this._previousCount = currentCount;
-            this.refreshDisplay();
+            this.refreshDisplay(animate);
         }
     }
 
-    private refreshDisplay() {
+    private refreshDisplay(animate: boolean) {
         if (!this.bombLabel) return;
         this.bombLabel.string = `x ${this._previousCount}`;
 
         // 弹跳动画：先放大再缩回
-        if (this._previousCount !== 0) {
+        if (animate) {
             tween(this.node)
                 .to(0.1, { scale: new Vec3(this.bumpScale, this.bumpScale, 1) })
                 .to(0.1, { scale: new Vec3(1, 1, 1) })

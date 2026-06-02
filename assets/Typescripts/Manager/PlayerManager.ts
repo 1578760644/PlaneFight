@@ -248,7 +248,7 @@ export class PlayerManager extends Component {
     }
 
     private useBomb() {
-        if (!RewardManager.inst.useBomb()) return; //没有炸弹
+        if (RewardManager.inst.bombCount <= 0) return; //没有炸弹
 
         AudioManager.inst.usePropBomb();
         this.scheduleOnce(() => {
@@ -258,7 +258,7 @@ export class PlayerManager extends Component {
 
             //清屏
             EnemyManager.inst.clearAllEnemies();
-        }, 0.5)
+        }, 0.3)
     }
 
 }
