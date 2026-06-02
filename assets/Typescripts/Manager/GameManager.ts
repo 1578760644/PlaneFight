@@ -1,4 +1,5 @@
 import { _decorator, Component, Node } from 'cc';
+import { AudioManager } from './AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -16,6 +17,10 @@ export class GameManager extends Component {
 
     protected onLoad(): void {
         GameManager._inst = this;
+    }
+
+    protected start(): void {
+        AudioManager.inst.playBGM();
     }
 
     //每一次都取反，就可以切换true和false

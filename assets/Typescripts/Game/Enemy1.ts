@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, Sprite, SpriteFrame, Vec3, view } from 'cc';
 import { EnemyManager, IEnemy } from '../Manager/EnemyManager';
 import { GameManager } from '../Manager/GameManager';
+import { AudioManager } from '../Manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Enemy1')
@@ -99,9 +100,12 @@ export class Enemy1 extends Component implements IEnemy {
         this.currentHp -= damage;
 
         if (this.currentHp <= 0) {
+            AudioManager.inst.enemy1Explosion();
+            
             //死亡爆炸
             this._isDead = true;
             this._shouldRecycle = false;
+
 
             if (!this._sprite) {
                 this._sprite = this.spriteComp ?? this.getComponentInChildren(Sprite);

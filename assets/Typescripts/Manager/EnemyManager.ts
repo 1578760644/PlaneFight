@@ -190,6 +190,9 @@ export class EnemyManager extends Component {
         return this.activeEnemies;
     }
 
+    //清除所有活跃敌人（用于炸弹等全屏攻击）
+    
+
 }
 
 

@@ -1,6 +1,7 @@
 import { _decorator, clamp, Component, EventMouse, EventTouch, Input, input, instantiate, Node, Prefab, UITransform, Vec2, Vec3, view } from 'cc';
 import { BulletManager } from '../Manager/BulletManager';
 import { GameManager } from './GameManager';
+import { AudioManager } from './AudioManager';
 const { ccclass, property } = _decorator;
 
 //通过接口和数组来灵活调用子弹，暂时没有用到
@@ -45,9 +46,13 @@ export class PlayerManager extends Component {
 
     //发射子弹的方法
     private shootTimer: number = 0;
+    private dualShootTimer: number = 0;            // 双发专用计时器
 
     @property
-    private shootInterval: number = 0.3;
+    private shootInterval: number = 0.3;            //单发间隔
+    @property({ displayName: '双发间隔', tooltip: '双发子弹的发射间隔，值越小射速越快' })
+    private dualShootInterval: number = 0.15;      // 双发间隔，可以设得更小（例如0.1）
+
 
     //暂时用一下切换子弹
     @property
@@ -162,18 +167,20 @@ export class PlayerManager extends Component {
             if (!this.muzzle1) return;
             const worldPos = this.muzzle1.getWorldPosition();
             const direction = new Vec3(0, 1, 0);
+            AudioManager.inst.playBullet();
             BulletManager.inst.fire('Bullet01', worldPos, direction)
         }
     }
 
     private twoShoot(deltaTime: number) {
-        this.shootTimer += deltaTime;
-        if (this.shootTimer >= this.shootInterval) {
-            this.shootTimer = 0;
+        this.dualShootTimer += deltaTime;
+        if (this.dualShootTimer >= this.dualShootInterval) {
+            this.dualShootTimer = 0;
 
             if (!this.muzzle2) return;
             const worldPos = this.muzzle2.getWorldPosition();
             const direction = new Vec3(0, 1, 0);
+            AudioManager.inst.playBullet();
             BulletManager.inst.fire('Bullet02', worldPos, direction)
         }
     }
@@ -196,6 +203,7 @@ export class PlayerManager extends Component {
     }
 
     private restoreOneShoot() {
+        AudioManager.inst.outPropBullet02Clip();
         this.shootType = ShootType.OneShoot;
     }
 

@@ -1,6 +1,7 @@
 import { _decorator, Animation, Component, Sprite, SpriteFrame, Vec3, view } from 'cc';
 import { EnemyManager, IEnemy } from '../Manager/EnemyManager';
 import { GameManager } from '../Manager/GameManager';
+import { AudioManager } from '../Manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Enemy0')
@@ -103,6 +104,8 @@ export class Enemy0 extends Component implements IEnemy {
 
         // 清除可能已存在的屏幕回收标记（关键修复！）
         this._shouldRecycle = false;
+
+        AudioManager.inst.enemy0Explosion();
 
         // 最后兜底：如果 _sprite 仍为空，尝试再次获取
         if (!this._sprite) {

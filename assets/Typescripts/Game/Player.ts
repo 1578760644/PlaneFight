@@ -8,6 +8,7 @@ import { RewardManager } from '../Manager/RewardManager';
 import { PropBomb } from './PropBomb';
 import { PropBullet02 } from './PropBullet02';
 import { GameManager } from '../Manager/GameManager';
+import { AudioManager } from '../Manager/AudioManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('Player')
@@ -139,6 +140,7 @@ export class Player extends Component {
                         console.log('当前血量', this.playerHp);
 
                         if (this.playerHp <= 0) {
+                            AudioManager.inst.playGameOver();
                             this.playerDead();
                             break; //死了就不再检查其他敌人
                         } else {
@@ -180,11 +182,13 @@ export class Player extends Component {
 
                     //判断类型并触发效果  instanceof判断 rewardComp 是不是 PropBullet02 这个类的实例。
                     if (rewardComp instanceof PropBullet02) {
+                        AudioManager.inst.playPropBullet02Clip();
                         const pm = this.node.parent?.getComponent(PlayerManager);
                         if (pm) {
                             pm.activateTwoShootTemporart(8);
                         }
                     } else if (rewardComp instanceof PropBomb) {
+                        AudioManager.inst.playPropBombClip();
                         RewardManager.inst.addBomb();
                     }
                     break;

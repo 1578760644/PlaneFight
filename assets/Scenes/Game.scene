@@ -21,12 +21,15 @@
       },
       {
         "__id__": 61
+      },
+      {
+        "__id__": 109
       }
     ],
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 109
+      "__id__": 111
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -57,7 +60,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 114
+      "__id__": 116
     },
     "_id": "a05f44c7-e82c-481c-9613-cbd743d94a67"
   },
@@ -1378,6 +1381,7 @@
     "muzzle1": null,
     "muzzle2": null,
     "shootInterval": 0.3,
+    "dualShootInterval": 0.15,
     "shootType": 0,
     "_id": "1extaw3U1Em7LE4Pa4Tk9j"
   },
@@ -3412,6 +3416,107 @@
     "_id": "e01bnHaJ9IPJybbveQj+4U"
   },
   {
+    "__type__": "cc.Node",
+    "_name": "AudioManager",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "_parent": {
+      "__id__": 1
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 110
+      }
+    ],
+    "_prefab": null,
+    "_lpos": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_lrot": {
+      "__type__": "cc.Quat",
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "w": 1
+    },
+    "_lscale": {
+      "__type__": "cc.Vec3",
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "_mobility": 0,
+    "_layer": 1073741824,
+    "_euler": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_id": "d6ZlBbIGJC24If/o4pdRA2"
+  },
+  {
+    "__type__": "044f69voDFDKImAufd9aS3D",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 109
+    },
+    "_enabled": true,
+    "__prefab": null,
+    "bgmClip": {
+      "__uuid__": "7e2e1587-712c-4b6f-b34c-bb57f486263a",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "gameOver": {
+      "__uuid__": "b0504dc6-a836-4ee6-bfb1-54943ebc33b3",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "bulletClip": {
+      "__uuid__": "2aa54cbb-be08-4537-9be0-24f25f5c2c4b",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "enemy0ExplosionClip": {
+      "__uuid__": "548f52ef-f29c-4a50-a327-4a417a1fc3df",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "enemy1ExplosionClip": {
+      "__uuid__": "548f52ef-f29c-4a50-a327-4a417a1fc3df",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "enemy2ExplosionClip": {
+      "__uuid__": "17285e1f-b216-4567-bcb9-42c86be91464",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "propBullet02Clip": {
+      "__uuid__": "2750f93f-799d-4a27-a9df-ae0dc0794e6b",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "propBombClip": {
+      "__uuid__": "002220ee-363b-4722-a502-a43da7e796e0",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "propBullet02ClipOut": {
+      "__uuid__": "01bb02bc-3fb5-4acf-a804-26e5d1bc3aff",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "propBombUseClip": {
+      "__uuid__": "9d2cff14-1143-4386-b61c-46411c8c87b9",
+      "__expectedType__": "cc.AudioClip"
+    },
+    "bgmVolume": 0.5,
+    "enemy0Volume": 0.8,
+    "enemy1Volume": 0.8,
+    "enemy2Volume": 2,
+    "_id": "06l94ZhUFK5Le/HP3mAP3U"
+  },
+  {
     "__type__": "cc.PrefabInfo",
     "root": null,
     "asset": null,
@@ -3419,10 +3524,10 @@
     "instance": null,
     "targetOverrides": [
       {
-        "__id__": 110
+        "__id__": 112
       },
       {
-        "__id__": 112
+        "__id__": 114
       }
     ],
     "nestedPrefabInstanceRoots": [
@@ -3444,7 +3549,7 @@
       "__id__": 31
     },
     "targetInfo": {
-      "__id__": 111
+      "__id__": 113
     }
   },
   {
@@ -3466,7 +3571,7 @@
       "__id__": 31
     },
     "targetInfo": {
-      "__id__": 113
+      "__id__": 115
     }
   },
   {
@@ -3478,28 +3583,28 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 115
-    },
-    "shadows": {
-      "__id__": 116
-    },
-    "_skybox": {
       "__id__": 117
     },
-    "fog": {
+    "shadows": {
       "__id__": 118
     },
-    "octree": {
+    "_skybox": {
       "__id__": 119
     },
-    "skin": {
+    "fog": {
       "__id__": 120
     },
-    "lightProbeInfo": {
+    "octree": {
       "__id__": 121
     },
-    "postSettings": {
+    "skin": {
       "__id__": 122
+    },
+    "lightProbeInfo": {
+      "__id__": 123
+    },
+    "postSettings": {
+      "__id__": 124
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false
