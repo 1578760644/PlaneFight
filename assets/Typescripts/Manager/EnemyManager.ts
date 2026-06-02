@@ -191,7 +191,22 @@ export class EnemyManager extends Component {
     }
 
     //清除所有活跃敌人（用于炸弹等全屏攻击）
-    
+    public clearAllEnemies() {
+        // 拷贝一份，避免在循环中修改原数组 ... 是 JavaScript 的扩展运算符（Spread Operator），在这里的作用是浅拷贝一个数组。
+        const enemies = [...this.activeEnemies]
+        for (const enemy of enemies) {
+            if (!enemy || !enemy.active) continue;
+
+            // 用之前通用的方式获取敌人组件（尝试每种类型）
+            let comp: any = enemy.getComponent('Enemy0');
+            if (!comp) comp = enemy.getComponent('Enemy1');
+            if (!comp) comp = enemy.getComponent('Enemy2');
+
+            if (comp && comp.onHitByBullet) {
+                comp.onHitByBullet(999);   // 造成高额伤害
+            }
+        }
+    }
 
 }
 

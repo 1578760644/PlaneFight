@@ -39,6 +39,8 @@ export class AudioManager extends Component {
     public propBullet02ClipOut: AudioClip = null!;
     @property(AudioClip)
     public propBombUseClip: AudioClip = null!;
+    @property(AudioClip)
+    public propBomb: AudioClip = null!;
 
     // ---------- 音量控制（0 ~ 1） ----------
     @property({ displayName: '背景音乐音量', range: [0, 1, 0.01] })
@@ -90,6 +92,7 @@ export class AudioManager extends Component {
     public playPropBombClip() { this.playSound(this.propBombClip); }
     public outPropBullet02Clip() { this.playSound(this.propBullet02ClipOut); }
     public usePropBombClip() { this.playSound(this.propBombUseClip); }
+    public usePropBomb() { this.playSound(this.propBomb); }
 
 }
 

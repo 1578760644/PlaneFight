@@ -3510,6 +3510,10 @@
       "__uuid__": "9d2cff14-1143-4386-b61c-46411c8c87b9",
       "__expectedType__": "cc.AudioClip"
     },
+    "propBomb": {
+      "__uuid__": "ba22e0b4-4e7f-4f0e-b881-a3bc64d6b8a4",
+      "__expectedType__": "cc.AudioClip"
+    },
     "bgmVolume": 0.5,
     "enemy0Volume": 0.8,
     "enemy1Volume": 0.8,

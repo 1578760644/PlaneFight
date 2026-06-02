@@ -158,6 +158,12 @@ export class RewardManager extends Component {
     public addBomb() {
         this._bombCount++;
     }
+
+    public useBomb(): boolean {
+        if (this._bombCount <= 0) return false;
+        this._bombCount--;
+        return true;
+    }
 }
 
 

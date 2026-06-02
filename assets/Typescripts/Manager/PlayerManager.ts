@@ -1,7 +1,9 @@
-import { _decorator, clamp, Component, EventMouse, EventTouch, Input, input, instantiate, Node, Prefab, UITransform, Vec2, Vec3, view } from 'cc';
+import { _decorator, clamp, Component, EventMouse, EventTouch, Input, input, instantiate, Node, Prefab, tween, UITransform, Vec2, Vec3, view } from 'cc';
 import { BulletManager } from '../Manager/BulletManager';
 import { GameManager } from './GameManager';
 import { AudioManager } from './AudioManager';
+import { RewardManager } from './RewardManager';
+import { EnemyManager } from './EnemyManager';
 const { ccclass, property } = _decorator;
 
 //通过接口和数组来灵活调用子弹，暂时没有用到
@@ -58,6 +60,12 @@ export class PlayerManager extends Component {
     @property
     shootType: ShootType = ShootType.OneShoot;
 
+    //全屏炸弹相关逻辑
+    private _lastClickTime: number = 0;
+    private _clickCount: number = 0;
+    private readonly doubleClickThreshold: number = 0.5; // 双击时间阈值（秒）
+
+
     private _isPlayerAlive: boolean = true;
 
     protected onLoad(): void {
@@ -65,6 +73,8 @@ export class PlayerManager extends Component {
         PlayerManager._inst = this;
 
         input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this)
+
+        input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this);   // 监听鼠标抬起
     }
 
     start() {
@@ -95,7 +105,8 @@ export class PlayerManager extends Component {
     }
 
     protected onDestroy(): void {
-        input.off(Input.EventType.TOUCH_MOVE, this.onTouchMove, this)
+        input.off(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
+        input.off(Input.EventType.MOUSE_UP, this.onMouseUp, this);
     }
 
     // 计算边界（飞机中心不超出屏幕）
@@ -126,6 +137,35 @@ export class PlayerManager extends Component {
         playerPos.y = clamp(playerPos.y, this.minY, this.maxY)
 
         this.player.setPosition(playerPos)
+    }
+
+    //监听鼠标抬起
+    private onMouseUp(event: EventMouse) {
+        if (event.getButton() !== EventMouse.BUTTON_LEFT) return; //只响应左键 是数字比较BUTTON_LEFT是0，只有当0 ！== 0 相等的时候 才会取反执行false，从而不return
+        if (GameManager.inst.isPaused) return;
+        if (!this._isPlayerAlive) return;
+
+        //获取当前时间的“秒级数值”
+        const nowSecond = Date.now() / 1000;
+        //计算与上一次点击的时间间隔（秒）
+        const delta = nowSecond - this._lastClickTime;
+
+        // 如果间隔超过0.5阈值，重置计数
+        if (delta > this.doubleClickThreshold) {
+            this._clickCount = 0;
+        }
+
+        // 无论间隔多长，本次点击都要计入（计数值+1）
+        this._clickCount++;
+
+        //记录本次点击的时间，供下一次比较用
+        this._lastClickTime = nowSecond;
+
+        //如果已经连续点击了2次（且间隔都在阈值内），触发炸弹
+        if (this._clickCount >= 2) {
+            this._clickCount = 0;   // 重置，防止连续触发
+            this.useBomb();         // 使用炸弹
+        }
     }
 
     setPlayerSpawnPositon() {
@@ -205,6 +245,20 @@ export class PlayerManager extends Component {
     private restoreOneShoot() {
         AudioManager.inst.outPropBullet02Clip();
         this.shootType = ShootType.OneShoot;
+    }
+
+    private useBomb() {
+        if (!RewardManager.inst.useBomb()) return; //没有炸弹
+
+        AudioManager.inst.usePropBomb();
+        this.scheduleOnce(() => {
+            RewardManager.inst.useBomb();
+
+            AudioManager.inst.usePropBombClip();
+
+            //清屏
+            EnemyManager.inst.clearAllEnemies();
+        }, 0.5)
     }
 
 }
