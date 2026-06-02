@@ -15,6 +15,11 @@ export class GameManager extends Component {
         return this._isPaused;
     }
 
+    private _score: number = 0;
+    public get score(): number {
+        return this._score;
+    }
+
     protected onLoad(): void {
         GameManager._inst = this;
     }
@@ -26,6 +31,10 @@ export class GameManager extends Component {
     //每一次都取反，就可以切换true和false
     public togglePasue() {
         this._isPaused = !this._isPaused;
+    }
+
+    public addScore(points: number) {
+        this._score += points;
     }
 }
 

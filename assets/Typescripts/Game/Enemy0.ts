@@ -105,6 +105,7 @@ export class Enemy0 extends Component implements IEnemy {
         // 清除可能已存在的屏幕回收标记（关键修复！）
         this._shouldRecycle = false;
 
+        GameManager.inst.addScore(1);
         AudioManager.inst.enemy0Explosion();
 
         // 最后兜底：如果 _sprite 仍为空，尝试再次获取

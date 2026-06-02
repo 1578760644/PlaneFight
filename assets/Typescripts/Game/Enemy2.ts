@@ -128,6 +128,7 @@ export class Enemy2 extends Component implements IEnemy {
         this.currentHp -= damage;
 
         if (this.currentHp <= 0) {
+            GameManager.inst.addScore(5);
             AudioManager.inst.enemy2Explosion();
 
             //死亡爆炸
