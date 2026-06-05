@@ -9,7 +9,7 @@ import { PropBomb } from './PropBomb';
 import { PropBullet02 } from './PropBullet02';
 import { GameManager } from '../Manager/GameManager';
 import { AudioManager } from '../Manager/AudioManager';
-import { GameData } from '../Manager/GameData';
+import { GameData } from '../Data/GameData';
 const { ccclass, property } = _decorator;
 
 @ccclass('Player')

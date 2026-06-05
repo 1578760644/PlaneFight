@@ -1,5 +1,5 @@
 import { _decorator, Component, Label, Node, tween, Vec3 } from 'cc';
-import { RewardManager } from '../Manager/RewardManager';
+import { RewardManager } from 'db://assets/Typescripts/Manager/RewardManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('BombUI')

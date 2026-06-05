@@ -1,6 +1,6 @@
 import { _decorator, Component, Node } from 'cc';
-import { Player } from '../Game/Player';
-import { PlayerManager } from '../Manager/PlayerManager';
+import { Player } from 'db://assets/Typescripts/Game/Player';
+import { PlayerManager } from 'db://assets/Typescripts/Manager/PlayerManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('HealthUI')

@@ -1,5 +1,5 @@
 import { _decorator, Component, Node } from 'cc';
-import { GameManager } from '../Manager/GameManager';
+import { GameManager } from 'db://assets/Typescripts/Manager/GameManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('PauseUI')

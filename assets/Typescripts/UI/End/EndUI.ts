@@ -1,5 +1,5 @@
 import { _decorator, Component, Label, Node } from 'cc';
-import { GameData } from '../Manager/GameData';
+import { GameData } from '../../Data/GameData';
 const { ccclass, property } = _decorator;
 
 @ccclass('EndUI')

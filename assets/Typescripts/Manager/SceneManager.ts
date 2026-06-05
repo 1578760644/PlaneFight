@@ -1,7 +1,7 @@
 import { _decorator, Component, Node, view } from 'cc';
 
 
-//后续修改为GameConfig 用来存放全局配置，VisibleSize方法可以删了
+//后续可以修改为GameConfig 用来存放全局配置
 export class SceneManager {
     //用于管理场景的单例
     private static _inst: SceneManager;
