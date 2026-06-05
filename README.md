@@ -2,11 +2,12 @@
 
 此项目为Cocos学习的第五个项目，开发版本**3.8.2**，2D项目模仿经典游戏飞机大战。从游戏开始到游戏中再到结束，基本上实现了完整的游玩逻辑闭环。
 
-![image-20260605235450430](./PlaneFight.assets/image-20260605235450430.png)
+![start](https://raw.githubusercontent.com/1578760644/PlaneFight/refs/heads/master/image/start.png)
 
-![image-20260605235459366](./PlaneFight.assets/image-20260605235459366.png)
+![game](https://raw.githubusercontent.com/1578760644/PlaneFight/refs/heads/master/image/game.png)
 
-![image-20260605235510408](./PlaneFight.assets/image-20260605235510408.png)
+![end](https://raw.githubusercontent.com/1578760644/PlaneFight/refs/heads/master/image/end.png)
+
 
 ## 主要功能：
 
@@ -28,8 +29,8 @@
 - **对象池模式**：管理子弹、敌人、奖励。避免频繁创建/销毁节点，通过Map统一管理多种类型的对象池
 - **数据驱动**：新增类型或修改参数只需要更改数据，无需改动逻辑代码。
 - **关注点分离**：一个脚本只做一件事
-- **接口约束：**强制对象实现必要方法，保证对象池安全重置，同时让Manager能统一调用
-- **精灵动画：**避开引擎Animation组件与对象池兼容问题
+- **接口约束**：强制对象实现必要方法，保证对象池安全重置，同时让Manager能统一调用
+- **精灵动画**：避开引擎Animation组件与对象池兼容问题
 - **时间戳差值判断**：双击炸弹检测、无敌闪烁、帧动画计时，不依赖引擎计时器
 
 
