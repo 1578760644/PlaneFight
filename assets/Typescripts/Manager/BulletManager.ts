@@ -107,7 +107,7 @@ export class BulletManager extends Component {
     }
 
     //通用发射口
-    fire(type: string, worldPos: Vec3, direction: Vec3) {
+    fire(type: string, worldPos: Vec3, direction?: Vec3) {
         //从poolMap里取出对应表,如果不存在就return
         const info = this.poolMap.get(type);
         if (!info) return;
@@ -127,8 +127,8 @@ export class BulletManager extends Component {
 
         //取预制体下的自定义组件名
         const comp = bullet.getComponent(info.compName) as unknown as ILauncher | null;
-        //使用接口类型断言来避免报错，保持类型安全
-        if (comp?.init) comp.init(direction);
+        //只有当传入了方向参数时，才调用 init 覆盖默认方向
+        if (comp?.init && direction ) comp.init(direction);
     }
 
     //回收（根据节点上保存的类型自动放入对应池）

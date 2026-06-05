@@ -170,7 +170,7 @@ export class PlayerManager extends Component {
             timer = 0;
             const worldPos = config.muzzle.getWorldPosition();
             AudioManager.inst.playBullet();
-            BulletManager.inst.fire(config.bulletType, worldPos, config.direction);
+            BulletManager.inst.fire(config.bulletType, worldPos); //不添加参数，子弹按照默认方向移动
         }
         this.shootTimers.set(this.shootType, timer);
     }
@@ -187,7 +187,7 @@ export class PlayerManager extends Component {
             [ShootType.TwoShoot]: {
                 muzzle: this.muzzle2,
                 bulletType: 'Bullet02',
-                direction: new Vec3(0, 1, 0), // 保留斜向
+                direction: new Vec3(0.5, 1, 0), // 保留斜向,作为添加可选参数的测试
                 interval: this.dualShootInterval
             }
         };
