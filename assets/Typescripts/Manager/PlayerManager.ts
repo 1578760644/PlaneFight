@@ -6,13 +6,6 @@ import { RewardManager } from './RewardManager';
 import { EnemyManager } from './EnemyManager';
 const { ccclass, property } = _decorator;
 
-//通过接口和数组来灵活调用子弹，暂时没有用到
-interface MuzzleConfig {
-    node: Node;         // 发射口节点
-    bulletType: string; // 子弹类型，对应poolMap里的键
-    direction: Vec3;    // 发射方向
-}
-
 enum ShootType {
     OneShoot,
     TwoShoot
@@ -31,9 +24,6 @@ export class PlayerManager extends Component {
     public muzzle1: Node | null = null;
     @property(Node)
     public muzzle2: Node | null = null;
-
-    //发射口配置数组
-    private muzzleConfigs: MuzzleConfig[] = [];
 
     //限制飞行边界
     private minX: number = 0;
@@ -56,9 +46,12 @@ export class PlayerManager extends Component {
     private dualShootInterval: number = 0.15;      // 双发间隔，可以设得更小（例如0.1）
 
 
-    //暂时用一下切换子弹
+    //用于切换子弹
     @property
     shootType: ShootType = ShootType.OneShoot;
+
+    //统一计时器映射
+    private shootTimers: Map<ShootType, number> = new Map();
 
     //全屏炸弹相关逻辑
     private _lastClickTime: number = 0;
@@ -86,22 +79,16 @@ export class PlayerManager extends Component {
         //设置飞机生成位置
         this.setPlayerSpawnPositon();
 
-        //初始化发射口配置
-        this.initMuzzleConfigs();
+        // 初始化计时器
+        this.shootTimers.set(ShootType.OneShoot, 0);
+        this.shootTimers.set(ShootType.TwoShoot, 0);
     }
 
     update(deltaTime: number) {
-        if (GameManager.inst.isPaused) return;
-        if (!this._isPlayerAlive) return; //死亡后结束射击
+        if (GameManager.inst.isPaused || !this._isPlayerAlive) return; //死亡后结束射击
 
-        switch (this.shootType) {
-            case ShootType.OneShoot:
-                this.oneShoot(deltaTime);
-                break;
-            case ShootType.TwoShoot:
-                this.twoShoot(deltaTime);
-                break;
-        }
+        //统一的射击更新
+        this.shoot(deltaTime);
     }
 
     protected onDestroy(): void {
@@ -173,56 +160,38 @@ export class PlayerManager extends Component {
         this.player.setPosition(0, this.spawnY)
     }
 
-    //还可以有更动态的方式
-    private initMuzzleConfigs() {
-        this.muzzleConfigs = [
-            {
-                node: this.muzzle1,
+    //统一射击逻辑
+    private shoot(deltaTime: number) {
+        const config = this.getShootConfig(this.shootType);
+        if (!config || !config.muzzle) return;
+
+        let timer = this.shootTimers.get(this.shootType)! + deltaTime;
+        if (timer >= config.interval) {
+            timer = 0;
+            const worldPos = config.muzzle.getWorldPosition();
+            AudioManager.inst.playBullet();
+            BulletManager.inst.fire(config.bulletType, worldPos, config.direction);
+        }
+        this.shootTimers.set(this.shootType, timer);
+    }
+
+    //射击配置映射
+    private getShootConfig(type: ShootType) {
+        const map = {
+            [ShootType.OneShoot]: {
+                muzzle: this.muzzle1,
                 bulletType: 'Bullet01',
                 direction: new Vec3(0, 1, 0),
+                interval: this.shootInterval
             },
-            {
-                node: this.muzzle2,
+            [ShootType.TwoShoot]: {
+                muzzle: this.muzzle2,
                 bulletType: 'Bullet02',
-                direction: new Vec3(0.5, 1, 0), //斜着射
-            },
-        ]
-    }
-
-    // //发射方法，暂时弃用
-    // private shoot() {
-    //     for (const config of this.muzzleConfigs) {
-    //         if (!config) continue //节点没挂载就跳过
-    //         const worldPos = config.node.getWorldPosition();
-    //         BulletManager.inst.fire(config.bulletType, worldPos, config.direction)
-    //     }
-    // }
-
-    //发射方法
-    private oneShoot(deltaTime: number) {
-        this.shootTimer += deltaTime;
-        if (this.shootTimer >= this.shootInterval) {
-            this.shootTimer = 0;
-
-            if (!this.muzzle1) return;
-            const worldPos = this.muzzle1.getWorldPosition();
-            const direction = new Vec3(0, 1, 0);
-            AudioManager.inst.playBullet();
-            BulletManager.inst.fire('Bullet01', worldPos, direction)
-        }
-    }
-
-    private twoShoot(deltaTime: number) {
-        this.dualShootTimer += deltaTime;
-        if (this.dualShootTimer >= this.dualShootInterval) {
-            this.dualShootTimer = 0;
-
-            if (!this.muzzle2) return;
-            const worldPos = this.muzzle2.getWorldPosition();
-            const direction = new Vec3(0, 1, 0);
-            AudioManager.inst.playBullet();
-            BulletManager.inst.fire('Bullet02', worldPos, direction)
-        }
+                direction: new Vec3(0, 1, 0), // 保留斜向
+                interval: this.dualShootInterval
+            }
+        };
+        return map[type];
     }
 
     //由player调用的死亡回调
@@ -239,12 +208,17 @@ export class PlayerManager extends Component {
         this.unschedule(this.restoreOneShoot);
 
         this.shootType = ShootType.TwoShoot;
+
+        //切换时重置计时器，避免连发卡顿
+        this.shootTimers.set(this.shootType, 0);
         this.scheduleOnce(this.restoreOneShoot, duration);
     }
 
     private restoreOneShoot() {
         AudioManager.inst.outPropBullet02Clip();
         this.shootType = ShootType.OneShoot;
+        //恢复时也可重置计时器
+        this.shootTimers.set(this.shootType, 0);
     }
 
     private useBomb() {
