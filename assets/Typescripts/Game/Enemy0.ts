@@ -32,17 +32,14 @@ export class Enemy0 extends Component implements IEnemy {
     @property({ type: Sprite, displayName: 'Sprite 组件' })
     public spriteComp: Sprite | null = null;
 
-    //缓存Sprite引用
-    private _sprite: Sprite | null = null;
+    //缓存Sprite引用, 初始化时暂时赋 null!，但承诺后续必赋值
+    private _sprite: Sprite = null!;
 
     protected start(): void {
-        // 优先使用拖入的组件，否则自动查找
-        if (this.spriteComp) {
-            this._sprite = this.spriteComp;
-        } else {
-            this._sprite = this.getComponentInChildren(Sprite);
-        }
-        if (!this.defaultSpriteFrame && this._sprite) {
+        // 优先使用拖入的，否则自动查找（必定存在）
+        this._sprite = this.spriteComp || this.getComponentInChildren(Sprite)!;
+        // 如果未设置默认外观，使用当前显示的帧
+        if (!this.defaultSpriteFrame) {
             this.defaultSpriteFrame = this._sprite.spriteFrame;
         }
     }
@@ -102,38 +99,18 @@ export class Enemy0 extends Component implements IEnemy {
         if (this._isDead) return;
         this._isDead = true;
 
-        // 清除可能已存在的屏幕回收标记（关键修复！）
+        // 清除可能已存在的屏幕回收标记
         this._shouldRecycle = false;
 
         GameManager.inst.addScore(1);
         AudioManager.inst.enemy0Explosion();
 
-        // 最后兜底：如果 _sprite 仍为空，尝试再次获取
-        if (!this._sprite) {
-            if (this.spriteComp) {
-                this._sprite = this.spriteComp;
-            } else {
-                this._sprite = this.getComponentInChildren(Sprite);
-            }
-            if (!this._sprite) {
-                console.error('[Enemy0] Sprite 组件丢失，无法播放动画');
-                this.scheduleOnce(() => { this._shouldRecycle = true; }, 0.3);
-                return;
-            }
-        }
-
+        // 直接使用已存在的 _sprite，无需再检查
         this._isExploding = true;
         this._frameIndex = 0;
         this._frameTimer = 0;
+        this._sprite.spriteFrame = this.explosionFrames[0]; //爆炸帧至少有一帧
 
-        //如果爆炸序列帧非空，显示第一帧
-        if (this._sprite && this.explosionFrames.length > 0) {
-            this._sprite.spriteFrame = this.explosionFrames[0];
-        } else {
-            // 没有爆炸帧，延迟回收，避免瞬间消失
-            this._isExploding = false;
-            this._shouldRecycle = true;
-        }
     }
 
     //池化激活回调
@@ -151,13 +128,9 @@ export class Enemy0 extends Component implements IEnemy {
             this._sprite = this.getComponentInChildren(Sprite);
         }
 
-        //强制恢复默认外观
-        if (this._sprite && this.defaultSpriteFrame) {
-            this._sprite.spriteFrame = this.defaultSpriteFrame;
-        } else if (this._sprite && !this.defaultSpriteFrame) {
-            //若defaultSpriteFrame为空，则用当前spriteFrame 作为默认（首次）
-            this.defaultSpriteFrame = this._sprite.spriteFrame;
-        }
+        // 重新获取一次 Sprite，以防对象池改变了节点结构
+        this._sprite = this.spriteComp || this.getComponentInChildren(Sprite)!;
+        this._sprite.spriteFrame = this.defaultSpriteFrame!;
     }
 
     //回收回调
@@ -169,11 +142,7 @@ export class Enemy0 extends Component implements IEnemy {
         this._frameIndex = 0;
         this._frameTimer = 0;
 
-
-        //同样恢复默认外观
-        if (this._sprite && this.defaultSpriteFrame) {
-            this._sprite.spriteFrame = this.defaultSpriteFrame;
-        }
+        this._sprite.spriteFrame = this.defaultSpriteFrame!;
     }
 
 }

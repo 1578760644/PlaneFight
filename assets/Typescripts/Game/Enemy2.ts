@@ -39,18 +39,14 @@ export class Enemy2 extends Component implements IEnemy {
 
     @property({ type: Sprite, displayName: 'Sprite组件' })
     public spriteComp: Sprite | null = null;
-    private _sprite: Sprite | null = null;
+    private _sprite: Sprite = null!;
 
     protected start(): void {
         //初始化血量
         this.currentHp = this.maxHp;
 
-        if (this.spriteComp) {
-            this._sprite = this.spriteComp;
-        } else {
-            this._sprite = this.getComponentInChildren(Sprite);
-        }
-        if (!this.defaultSpriteFrame && this._sprite) {
+        this._sprite = this.spriteComp || this.getComponentInChildren(Sprite)!;
+        if (!this.defaultSpriteFrame) {
             this.defaultSpriteFrame = this._sprite.spriteFrame;
         }
     }
@@ -71,17 +67,14 @@ export class Enemy2 extends Component implements IEnemy {
                 this._hurtFrameTimer -= this.hurtFrameInterval;
                 this._hurtFrameIndex++;
                 if (this._hurtFrameIndex < this.hurtFrames.length) {
-                    // 切换到下一帧受击
-                    if (this._sprite) {
-                        this._sprite.spriteFrame = this.hurtFrames[this._hurtFrameIndex];
-                    }
+                    this._sprite.spriteFrame = this.hurtFrames[this._hurtFrameIndex];
                 } else {
                     // 受击帧播放完毕，恢复默认外观
                     this._isHurting = false;
                     this._hurtFrameIndex = 0;
                     this._hurtFrameTimer = 0;
-                    if (this._sprite && this.defaultSpriteFrame && !this._isDead && !this._isExploding) {
-                        this._sprite.spriteFrame = this.defaultSpriteFrame;
+                    if (!this._isDead && !this._isExploding) {
+                        this._sprite.spriteFrame = this.defaultSpriteFrame!;
                     }
                 }
             }
@@ -94,9 +87,7 @@ export class Enemy2 extends Component implements IEnemy {
                 this._frameTimer -= this.frameInterval;
                 this._frameIndex++
                 if (this._frameIndex < this.explosionFrames.length) {
-                    if (this._sprite) {
-                        this._sprite.spriteFrame = this.explosionFrames[this._frameIndex];
-                    }
+                    this._sprite.spriteFrame = this.explosionFrames[this._frameIndex];
                 } else {
                     this._isExploding = false;
                     this._shouldRecycle = true;
@@ -135,20 +126,10 @@ export class Enemy2 extends Component implements IEnemy {
             this._isDead = true;
             this._shouldRecycle = false;
 
-            if (!this._sprite) {
-                this._sprite = this.spriteComp ?? this.getComponentInChildren(Sprite);
-            }
-
             this._isExploding = true;
             this._frameIndex = 0;
             this._frameTimer = 0;
-
-            if (this._sprite && this.explosionFrames.length > 0) {
-                this._sprite.spriteFrame = this.explosionFrames[0];
-            } else {
-                this._isExploding = false;
-                this._shouldRecycle = true;
-            }
+            this._sprite.spriteFrame = this.explosionFrames[0]; // 假定至少有一帧爆炸图
         } else {
             //受击闪烁
             this.playHurtEffect();
@@ -157,17 +138,14 @@ export class Enemy2 extends Component implements IEnemy {
 
     //受击闪烁
     private playHurtEffect() {
-        if (this._isHurting) return;
-        if (this.hurtFrames.length === 0) return; // 没有受击帧则无效果
+        if (this._isHurting || this.hurtFrames.length === 0) return; // 没有受击帧则无效果
 
         this._isHurting = true;
         this._hurtFrameIndex = 0;
         this._hurtFrameTimer = 0;
 
         // 立即显示第一帧受击
-        if (this._sprite) {
-            this._sprite.spriteFrame = this.hurtFrames[0];
-        }
+        this._sprite.spriteFrame = this.hurtFrames[0];
     }
 
     //对象池重置
@@ -183,17 +161,8 @@ export class Enemy2 extends Component implements IEnemy {
         this._hurtFrameIndex = 0;
         this._hurtFrameTimer = 0;
 
-        if (this.spriteComp) {
-            this._sprite = this.spriteComp;
-        } else {
-            this._sprite = this.getComponentInChildren(Sprite);
-        }
-
-        if (this._sprite && this.defaultSpriteFrame) {
-            this._sprite.spriteFrame = this.defaultSpriteFrame;
-        } else if (this._sprite && !this.defaultSpriteFrame) {
-            this.defaultSpriteFrame = this._sprite.spriteFrame;
-        }
+        this._sprite = this.spriteComp || this.getComponentInChildren(Sprite)!;
+        this._sprite.spriteFrame = this.defaultSpriteFrame!;
     }
 
     public onRecycle(): void {
@@ -208,9 +177,7 @@ export class Enemy2 extends Component implements IEnemy {
         this._hurtFrameIndex = 0;
         this._hurtFrameTimer = 0;
 
-        if (this._sprite && this.defaultSpriteFrame) {
-            this._sprite.spriteFrame = this.defaultSpriteFrame;
-        }
+        this._sprite.spriteFrame = this.defaultSpriteFrame!;
     }
 }
 
