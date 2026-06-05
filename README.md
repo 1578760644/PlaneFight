@@ -1,6 +1,8 @@
 # PlaneFight
 
-此项目为Cocos学习的第五个项目，开发版本**3.8.2**，2D项目模仿经典游戏飞机大战。从游戏开始到游戏中再到结束，基本上实现了完整的游玩逻辑闭环。
+使用 **Cocos Creator 3.8.2 + TypeScript** 开发的 2D 射击游戏（飞机大战）。
+
+这是我学习 Cocos Creator 过程中的第五个项目，已基本实现从开始菜单 → 游戏主循环 → 结束结算的完整玩法闭环。
 
 ![start](https://raw.githubusercontent.com/1578760644/PlaneFight/refs/heads/master/image/start.png)
 
